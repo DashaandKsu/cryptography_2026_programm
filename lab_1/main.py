@@ -1,1 +1,8 @@
 print("Hello, Ioan!")
+print("Hello, Dasha!")
+print("Hello, Denis!")
+print("Hello, Sasha!")
+print("Hello, Katya!")
+print("Hello, Masha!")
+print("Hello, Pasha!")
+print("Hello, Pasha!")
