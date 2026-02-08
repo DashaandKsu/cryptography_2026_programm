@@ -1,9 +1,12 @@
 # Итоговая программа: меню выбора шифров.
 # Содержит только импорт функций из папок lab_1, lab_2, ... и их использование.
 
+# Импортируем функции шифрования и расшифрования Атбаш и Цезаря
 from lab_1.atbash import encrypt_text as atbash_encrypt, decrypt_text as atbash_decrypt
+from lab_1.Cesar import encrypt_text as cesar_encrypt, decrypt_text as cesar_decrypt
 
 
+# Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
 def show_main_menu():
     """Вывод главного меню выбора шифра (два столбца)."""
     print("Выберите шифр:")
@@ -24,6 +27,7 @@ def show_main_menu():
     print()
 
 
+# Выводит подменю для выбранного шифра: зашифровать введённый текст, расшифровать введённый текст или вернуться к выбору другого шифра.
 def show_action_menu():
     """Подменю: зашифровать / расшифровать / выход."""
     print("Выберите действие:")
@@ -32,6 +36,7 @@ def show_action_menu():
     print("3. Выход")
     print()
 
+# По номеру шифра (cipher_id) и действию (1 — зашифровать, 2 — расшифровать) вызывает соответствующую функцию шифрования или расшифрования и передаёт ей текст; для нереализованных шифров возвращает None.
 def run_cipher(cipher_id, action, text):
     """
     Вызов нужной функции шифрования или расшифрования по номеру шифра.
@@ -42,10 +47,15 @@ def run_cipher(cipher_id, action, text):
             return atbash_encrypt(text)
         else:
             return atbash_decrypt(text)
-    # Остальные шифры пока не подключены
+    if cipher_id == 2:
+        if action == 1:
+            return cesar_encrypt(text)
+        else:
+            return cesar_decrypt(text)
     return None
 
 
+# Управляет диалогом с пользователем: показывает меню шифров, запрашивает выбор шифра и действие (шифрование/расшифрование), ввод текста, вызывает run_cipher и выводит результат; цикл повторяется до выбора «Выход».
 def main():
     while True:
         show_main_menu()
@@ -66,7 +76,6 @@ def main():
             print()
             continue
 
-        # Подменю для выбранного шифра
         while True:
             show_action_menu()
             try:
@@ -91,16 +100,20 @@ def main():
                 print()
                 continue
 
-            result = run_cipher(n, action, text)
-            if result is not None:
-                print("Результат:", result)
-            else:
-                print("Результат: Пока не реализовано.")
+            try:
+                result = run_cipher(n, action, text)
+                if result is not None:
+                    print("Результат:", result)
+                else:
+                    print("Результат: Пока не реализовано.")
+            except ValueError as e:
+                print("Ошибка:", e)
 
             print()
 
     return
 
 
+# Точка входа: при запуске файла как программы вызывается main() и запускается меню выбора шифров для шифрования и расшифрования текста.
 if __name__ == "__main__":
     main()
