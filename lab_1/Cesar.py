@@ -1,4 +1,6 @@
 # Шифр Цезаря: сдвиг буквы на k позиций вперёд (шифрование) или назад (расшифрование).
+# Ключ k — целое число (количество букв сдвига), вводится пользователем с клавиатуры
+# при шифровании и расшифровании (классический вариант — сдвиг на 3).
 
 # Общие функции подготовки текста и знаков препинания — как в Атбаш
 from lab_1.atbash import (
@@ -29,20 +31,21 @@ def _caesar(text, k, encrypt):
 
 
 def _get_key(key, prompt):
-    """Проверка ключа: целое число. Если key не передан — запрос с клавиатуры."""
+    """Ключ — целое число (сдвиг в буквах). Если key не передан — запрос с клавиатуры."""
     if key is None:
         key = input(prompt).strip()
     if key == "":
         raise ValueError("Ключ не введён.")
     try:
-        return int(key)
+        k = int(key)
     except ValueError:
-        raise ValueError("Ключ должен быть целым числом.")
+        raise ValueError("Ключ должен быть целым числом (например, 3 для сдвига на 3 буквы).")
+    return k
 
 
 def encrypt_text(text, key=None):
-    """Зашифровать текст. Ключ k — сдвиг по алфавиту. Результат — группы по 5 символов."""
-    k = _get_key(key, "Введите ключ (целое число — сдвиг): ")
+    """Зашифровать текст. Ключ k — сдвиг по алфавиту (вводится с клавиатуры, если не передан). Результат — группы по 5 символов."""
+    k = _get_key(key, "Введите ключ — сдвиг в буквах (например, 3): ")
     punct = create_punctuation_codes()
     prepared = prepare_text_for_encryption(text, punct)
     encrypted = _caesar(prepared, k, encrypt=True)
@@ -50,8 +53,8 @@ def encrypt_text(text, key=None):
 
 
 def decrypt_text(text, key=None):
-    """Расшифровать текст. Ключ k — тот же, что при шифровании."""
-    k = _get_key(key, "Введите ключ (сдвиг при шифровании): ")
+    """Расшифровать текст. Ключ k — тот же сдвиг, что использовался при шифровании (вводится с клавиатуры, если не передан)."""
+    k = _get_key(key, "Введите ключ — сдвиг в буквах (тот же, что при шифровании): ")
     code_to_punct = create_code_to_punctuation(create_punctuation_codes())
     text_clean = text.replace(" ", "").lower()
     decrypted = _caesar(text_clean, k, encrypt=False)
