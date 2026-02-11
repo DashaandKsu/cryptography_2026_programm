@@ -31,16 +31,37 @@ def _caesar(text, k, encrypt):
 
 
 def _get_key(key, prompt):
-    """Ключ — целое число (сдвиг в буквах). Если key не передан — запрос с клавиатуры."""
-    if key is None:
-        key = input(prompt).strip()
-    if key == "":
-        raise ValueError("Ключ не введён.")
-    try:
-        k = int(key)
-    except ValueError:
-        raise ValueError("Ключ должен быть целым числом (например, 3 для сдвига на 3 буквы).")
-    return k
+    """
+    Получение корректного ключа.
+    Ключ должен быть целым числом от 0 до 32 включительно.
+    При ошибке запрашивается повторный ввод.
+    """
+    while True:
+        # Если ключ не передан — запрашиваем с клавиатуры
+        if key is None:
+            key_input = input(prompt).strip()
+        else:
+            key_input = str(key).strip()
+
+        if key_input == "":
+            print("Ключ не введён.")
+            key = None
+            continue
+
+        try:
+            k = int(key_input)
+        except ValueError:
+            print("Ключ должен быть целым числом.")
+            key = None
+            continue
+
+        # Проверка диапазона
+        if k < 0 or k > 32:
+            print("Ключ должен быть числом от 0 до 32.")
+            key = None
+            continue
+
+        return k
 
 
 def encrypt_text(text, key=None):

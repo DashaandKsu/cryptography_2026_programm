@@ -21,7 +21,10 @@ def create_punctuation_codes():
     codes["?"] = "впрс"
     # Тире заменяется на "тир"
     codes["-"] = "тир"
+    codes["—"] = "тир"
     # Возвращаю готовый словарь замен
+    codes[" "] = "прбл"
+    
     return codes
 
 
@@ -40,25 +43,32 @@ def create_code_to_punctuation(punctuation_codes):
 
 
 def prepare_text_for_encryption(text, punctuation_codes):
-    """Подготовка текста: нижний регистр, ё->е, знаки в коды, без пробелов."""
-    # Перевожу весь текст в нижний регистр
+    """
+    Подготовка текста:
+    - перевод в нижний регистр
+    - ё -> е
+    - троеточие -> тчктчктчк
+    - замена знаков препинания и пробела на коды
+    """
+
+    # Нижний регистр
     text = text.lower()
-    # Заменяю букву «ё» на «е» по требованию задания
+
+    # Замена ё
     text = text.replace("ё", "е")
-    # Строка, в которую собираю результат без пробелов
+
+    # Обработка троеточия заранее
+    text = text.replace("...", "тчктчктчк")
+
     result = ""
-    # Прохожу по каждому символу исходного текста
+
+    # Замена символов по словарю
     for symbol in text:
-        # Пробелы пропускаю — не добавляю в result
-        if symbol == " ":
-            continue
-        # Если символ — знак препинания, подставляю его трёхбуквенный код
-        elif symbol in punctuation_codes:
+        if symbol in punctuation_codes:
             result = result + punctuation_codes[symbol]
-        # Иначе (буква или другой символ) добавляю как есть
         else:
             result = result + symbol
-    # Возвращаю подготовленную строку без пробелов
+
     return result
 
 
