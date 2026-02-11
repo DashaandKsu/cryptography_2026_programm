@@ -1,10 +1,11 @@
 # Итоговая программа: меню выбора шифров.
 # Содержит только импорт функций из папок lab_1, lab_2, ... и их использование.
 
-# Импортируем функции шифрования и расшифрования Атбаш, Цезаря и квадрата Полибия
+# Импортируем функции шифрования и расшифрования Атбаш, Цезаря, Полибия и Тритемия
 from lab_1.atbash import encrypt_text as atbash_encrypt, decrypt_text as atbash_decrypt
 from lab_1.Cesar import encrypt_text as cesar_encrypt, decrypt_text as cesar_decrypt
 from lab_1.Polibia import encrypt_text as polybius_encrypt, decrypt_text as polybius_decrypt
+from lab_2.Tritemi import encrypt_tritemius as tritemi_encrypt, decrypt_tritemius as tritemi_decrypt
 
 
 # Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
@@ -58,6 +59,12 @@ def run_cipher(cipher_id, action, text):
             return polybius_encrypt(text)
         else:
             return polybius_decrypt(text)
+    if cipher_id == 4:
+        if action == 1:
+            return tritemi_encrypt(text)
+        else:
+            return tritemi_decrypt(text)
+
     return None
 
 

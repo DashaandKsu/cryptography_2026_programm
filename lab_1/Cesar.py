@@ -56,8 +56,8 @@ def _get_key(key, prompt):
             continue
 
         # Проверка диапазона
-        if k < 0 or k > 32:
-            print("Ключ должен быть числом от 0 до 32.")
+        if k < 1 or k > 31:
+            print("Ключ должен быть числом от 1 до 31.")
             key = None
             continue
 
