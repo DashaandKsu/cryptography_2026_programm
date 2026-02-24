@@ -1,14 +1,24 @@
 # Итоговая программа: меню выбора шифров.
 # Содержит только импорт функций из папок lab_1, lab_2, ... и их использование.
 
-# Импортируем функции шифрования и расшифрования Атбаш, Цезаря, Полибия, Тритемия, Белазо и Виженера
+# Импортируем функции шифрования и расшифрования Атбаш, Цезаря, Полибия, Тритемия, Белазо, Виженера, матричного шифра и Плэйфера
 from lab_1.atbash import encrypt_text as atbash_encrypt, decrypt_text as atbash_decrypt
 from lab_1.Cesar import encrypt_text as cesar_encrypt, decrypt_text as cesar_decrypt
 from lab_1.Polibia import encrypt_text as polybius_encrypt, decrypt_text as polybius_decrypt
 from lab_2.Tritemi import encrypt_tritemius as tritemi_encrypt, decrypt_tritemius as tritemi_decrypt
 from lab_2.Belazo import encrypt_text as belazo_encrypt, decrypt_text as belazo_decrypt
 from lab_2.Vizhenera import encrypt_text as vigenere_encrypt, decrypt_text as vigenere_decrypt
-
+from lab_2.magma import encrypt_text as magma_encrypt, decrypt_text as magma_decrypt
+from lab_3.matrix import (
+    encrypt_text as matrix_encrypt_text,
+    decrypt_text as matrix_decrypt_text,
+)
+from lab_3.playfer import (
+    encrypt as playfair_encrypt,
+    decrypt as playfair_decrypt,
+    validate_key as playfair_validate_key,
+    display_table as playfair_display_table,
+)
 
 
 # Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
@@ -22,8 +32,8 @@ def show_main_menu():
     print(" 5. Шифр Белазо         20. Кузнечик")
     print(" 6. Шифр Виженера       21. RSA")
     print(" 7. Магма               22. ElGamal")
-    print(" 8. Матричный шифр      23. ECC")
-    print(" 9. Шифр Плейфера       24. RSA (подпись)")
+    print(" 8. Матричный шифр    23. ECC")
+    print(" 9. Шифр Плейфера     24. RSA (подпись)")
     print("10. Вертикальная перест. 25. ElGamal (подпись)")
     print("11. Решетка Кардано     26. ГОСТ 34.10-94")
     print("12. Сеть Фейстеля       27. ГОСТ 34.10-2012")
@@ -77,6 +87,26 @@ def run_cipher(cipher_id, action, text):
             return vigenere_encrypt(text)
         else:
             return vigenere_decrypt(text)
+    if cipher_id == 7:
+        if action == 1:
+            return magma_encrypt(text)
+        else:
+            return magma_decrypt(text)
+    if cipher_id == 8:
+        if action == 1:
+            return matrix_encrypt_text(text)
+        else:
+            return matrix_decrypt_text(text)
+    if cipher_id == 9:
+        key = input("Введите ключ Плэйфера: ").strip()
+        valid, msg = playfair_validate_key(key)
+        if not valid:
+            raise ValueError(msg)
+        playfair_display_table(key)
+        if action == 1:
+            return playfair_encrypt(text, key)
+        else:
+            return playfair_decrypt(text, key)
 
     return None
 
