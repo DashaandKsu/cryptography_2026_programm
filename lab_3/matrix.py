@@ -73,7 +73,7 @@ def invert_matrix(matrix):
     return [row[n:] for row in augmented]
 
 
-def matrix_decrypt(cipher_str: str, key_matrix, original_len: int):
+def matrix_decrypt(cipher_str: str, key_matrix, original_len: int = None):
     numbers = list(map(int, cipher_str.strip().split()))
     n = len(key_matrix)
     inv_matrix = invert_matrix(key_matrix)
@@ -90,7 +90,9 @@ def matrix_decrypt(cipher_str: str, key_matrix, original_len: int):
             vec[i] = total
         indices = [int(round(v)) for v in vec]
         result_chars.extend(_index_to_letter(idx) for idx in indices)
-    plain_letters = "".join(result_chars)[:original_len]
+    plain_letters = "".join(result_chars)
+    if original_len is not None:
+        plain_letters = plain_letters[:original_len]
     code_to_punct = create_code_to_punctuation(create_punctuation_codes())
     return restore_punctuation_from_codes(plain_letters, code_to_punct)
 
@@ -139,10 +141,9 @@ def encrypt_text(text: str) -> str:
 
 
 def decrypt_text(text: str) -> str:
-    """Расшифрование с запросом матрицы и длины из консоли (для вызова из main.py)."""
+    """Расшифрование с запросом матрицы из консоли (для вызова из main.py). Длина исходного текста неизвестна — вывод без обрезки."""
     key_matrix = input_matrix()
-    original_len = int(input("Введите длину исходного текста: ").strip())
-    return matrix_decrypt(text, key_matrix, original_len)
+    return matrix_decrypt(text, key_matrix)
 
 
 def matrix_mode():
@@ -167,10 +168,7 @@ def matrix_mode():
                     print("Зашифрованный текст (числа):", cipher)
                     print(f"(Длина исходного текста после подготовки: {orig_len})")
                 else:
-                    orig_len = int(
-                        input("Введите длину исходного текста (после подготовки): ")
-                    )
-                    plain = matrix_decrypt(text, key_matrix, orig_len)
+                    plain = matrix_decrypt(text, key_matrix)
                     print("Расшифрованный текст:", plain)
             except Exception as e:
                 print("Ошибка:", e)

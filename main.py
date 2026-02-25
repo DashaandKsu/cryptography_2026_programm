@@ -19,6 +19,9 @@ from lab_3.playfer import (
     validate_key as playfair_validate_key,
     display_table as playfair_display_table,
 )
+from lab_4.vertical import encrypt as vertical_encrypt, decrypt as vertical_decrypt
+from lab_4.feistel import encrypt as feistel_encrypt, split_key, check_params
+from lab_4.cardano import encrypt_text as cardano_encrypt, decrypt_text as cardano_decrypt, run_cardano_gui
 
 
 # Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
@@ -43,11 +46,13 @@ def show_main_menu():
 
 
 # Выводит подменю для выбранного шифра: зашифровать введённый текст, расшифровать введённый текст или вернуться к выбору другого шифра.
-def show_action_menu():
-    """Подменю: зашифровать / расшифровать / выход."""
+def show_action_menu(cipher_id=None):
+    """Подменю: зашифровать / расшифровать / выход. Для шифра 11 (Кардано) добавлен пункт 4 — окно с решёткой."""
     print("Выберите действие:")
     print("1. Зашифровать текст")
     print("2. Расшифровать текст")
+    if cipher_id == 11:
+        print("4. Открыть окно с решёткой Кардано")
     print("3. Выход")
     print()
 
@@ -107,6 +112,37 @@ def run_cipher(cipher_id, action, text):
             return playfair_encrypt(text, key)
         else:
             return playfair_decrypt(text, key)
+    if cipher_id == 10:
+        key = input("Введите ключ: ").strip()
+        if not key:
+            raise ValueError("Ключ не может быть пустым")
+        if action == 1:
+            prepared = text.replace(" ", "прб").replace(",", "зпт").replace(".", "тчк").replace(":", "").replace(";", "").replace("!", "").replace("?", "").lower()
+            return vertical_encrypt(prepared, key)
+        else:
+            return vertical_decrypt(text, key)
+    if cipher_id == 11:
+        if action == 1:
+            cipher, orig_len = cardano_encrypt(text)
+            print("Длина исходного текста (для расшифровки):", orig_len)
+            return cipher
+        else:
+            try:
+                orig_len_str = input("Введите длину исходного текста (после подготовки): ").strip()
+                orig_len = int(orig_len_str) if orig_len_str else None
+            except ValueError:
+                orig_len = None
+            return cardano_decrypt(text, orig_len)
+    if cipher_id == 12:
+        key = input("Введите ключ (64 hex-символа): ").strip()
+        check_params(text, key)
+        keys = split_key(key)
+        if action == 1:
+            return feistel_encrypt(text, keys)
+        else:
+            keys = list(keys)
+            keys.reverse()
+            return feistel_encrypt(text, keys)
 
     return None
 
@@ -133,20 +169,25 @@ def main():
             continue
 
         while True:
-            show_action_menu()
+            show_action_menu(n)
             try:
-                action_str = input("Введите номер действия (1-3): ").strip()
+                action_str = input("Введите номер действия (1-3" + (", 4" if n == 11 else "") + "): ").strip()
                 action = int(action_str)
             except ValueError:
-                print("Введите число 1, 2 или 3.")
+                print("Введите число 1, 2 или 3" + (" или 4" if n == 11 else "") + ".")
                 print()
                 continue
 
             if action == 3:
                 break
 
+            if n == 11 and action == 4:
+                run_cardano_gui()
+                print()
+                continue
+
             if action != 1 and action != 2:
-                print("Введите 1, 2 или 3.")
+                print("Введите 1, 2 или 3" + (" или 4" if n == 11 else "") + ".")
                 print()
                 continue
 
