@@ -1,5 +1,9 @@
 import math
 
+# Алфавит для символьной гаммы (32 символа, без "ё")
+ALPHABET = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
+MODULUS = len(ALPHABET)  # m определяется размером алфавита
+
 def preprocess_text(text):
     # Заменяем спецсимволы на маркеры
     replacements = {
@@ -46,8 +50,8 @@ def postprocess_text(text):
     return text
 
 def shenon(crypto_text, t_0, a, c, m, k=0):
-    # Только русские буквы (включая ё)
-    alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+    # Только русские буквы из заданного алфавита (без "ё")
+    alphabet = ALPHABET
     digits = len(str(len(alphabet)))  # Кол-во цифр для кодировки одной буквы
 
     if k == 0:  # Шифрование
@@ -61,6 +65,7 @@ def shenon(crypto_text, t_0, a, c, m, k=0):
     table_d = [t_0]
 
     for _ in range(len(crypto_text_d)):
+        # Генерация гаммы по модулю m (задан пользователем)
         table_d.append((a * table_d[-1] + c) % m)
 
     if k == 0:  # Шифрование
@@ -94,15 +99,41 @@ def prime_factors(n):
     return factors
 
 def check_conditions(a, c, m, t0):
+    errors = []
+
+    # Модуль не должен быть меньше размера алфавита
+    if m < MODULUS:
+        errors.append(f"m ({m}) меньше размера алфавита ({MODULUS})")
+
     b = a - 1
     factors = prime_factors(m)
-    return (a % 2 == 1 and 
-            math.gcd(c, m) == 1 and 
-            all(b % p == 0 for p in factors) and 
-            a < 100 and
-            t0 < 100 and 
-            c < 100 and 
-            a > 1)
+
+    # Условия максимального периода для символьной гаммы:
+    # a – нечетное число
+    if a % 2 == 0:
+        errors.append(f"a ({a}) должно быть нечётным")
+
+    # c – взаимно просто с модулем m
+    if math.gcd(c, m) != 1:
+        errors.append(f"c ({c}) должно быть взаимно просто с m ({m})")
+
+    # b = a – 1 кратно p для каждого простого p, делителя m
+    if not all(b % p == 0 for p in factors):
+        errors.append(f"a - 1 ({b}) должно быть кратно каждому простому делителю модуля m")
+
+    # b кратно 4, если m кратно 4
+    if m % 4 == 0 and b % 4 != 0:
+        errors.append(f"a - 1 ({b}) должно быть кратно 4, так как m ({m}) кратно 4")
+
+    # Дополнительные разумные ограничения
+    if a <= 1:
+        errors.append(f"a ({a}) должно быть больше 1")
+    if not (0 <= t0 < m):
+        errors.append(f"T0 ({t0}) должно быть в диапазоне [0, m)")
+    if not (0 <= c < m):
+        errors.append(f"c ({c}) должно быть в диапазоне [0, m)")
+
+    return len(errors) == 0, errors
 
 def main():
     while True:
@@ -116,31 +147,39 @@ def main():
         
         if choice == '1':
             text = input("Введите текст: ")
+            print(f"\nИспользуемый алфавит ({MODULUS} символов): {ALPHABET}")
+            m = int(input("Введите модуль m (>= размер алфавита): "))
             t0 = int(input("T0: "))
             a = int(input("a: "))
             c = int(input("c: "))
-            m = int(input("m: "))
             
-            if check_conditions(a, c, m, t0):
+            ok, errors = check_conditions(a, c, m, t0)
+            if ok:
                 encrypted = shenon(text, t0, a, c, m)
                 print("\nРезультат шифрования:")
                 print(' '.join(encrypted))
             else:
                 print("Ошибка: не выполнены условия для генератора!")
+                for err in errors:
+                    print(" -", err)
         
         elif choice == '2':
             text = input("Введите зашифрованный текст (без пробелов): ").replace(' ', '')
+            print(f"\nИспользуемый алфавит ({MODULUS} символов): {ALPHABET}")
+            m = int(input("Введите модуль m (>= размер алфавита): "))
             t0 = int(input("T0: "))
             a = int(input("a: "))
             c = int(input("c: "))
-            m = int(input("m: "))
             
-            if check_conditions(a, c, m, t0):
+            ok, errors = check_conditions(a, c, m, t0)
+            if ok:
                 decrypted = shenon(text, t0, a, c, m, k=1)
                 print("\nРезультат расшифровки:")
                 print(''.join(decrypted))
             else:
                 print("Ошибка: не выполнены условия для генератора!")
+                for err in errors:
+                    print(" -", err)
         
         elif choice == '3':
             print("Выход из программы...")
@@ -151,3 +190,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#чтобы модуль определялся алфавитом и не меньше чем алфавит, первым должен выделяться модуль, должна быть проверка на соответствие ключей, так как например 3 3 3 по ключам быть не может

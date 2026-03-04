@@ -16,13 +16,16 @@ def split_key(key: str) -> List[str]:
     blocks = [key[i:i+8] for i in range(0, len(key), 8)]
     return blocks * 3 + blocks[::-1]
 
+# Нелинейное преобразование 32‑битного слова по таблице S‑блоков
 def t(a: str) -> str:
     # S-box подстановка (a - hex строка длиной 8)
     return ''.join([hex(table[index][int(i, 16)])[2:] for index, i in enumerate(a)])
 
+# Циклический сдвиг влево на shift бит (по модулю 2^32)
 def cyclic_shift_left(value: int, shift: int, bits=32):
     return ((value << shift % bits) & ((1 << bits) - 1) | (value >> (bits - shift % bits))) & ((1 << bits) - 1)
 
+# Функция g из раундового преобразования (сложение по модулю 2^32 + S‑блоки + сдвиг)
 def g(key: str, a: str) -> str:
     # key и a - hex строки длиной 8
     s = (int(key, 16) + int(a, 16)) % 2 ** 32
@@ -31,6 +34,7 @@ def g(key: str, a: str) -> str:
     shifted = cyclic_shift_left(int(t_s, 16), 11)
     return hex(shifted)[2:].zfill(8)
 
+# Одна раундовая функция для пары 32‑битных слов (a1, a0)
 def G(a1, a0, key) -> str:
     # a1, a0, key - hex строки длиной 8
     return hex(int(g(key, a0), 16) ^ int(a1, 16))[2:].zfill(8)
@@ -70,20 +74,27 @@ def pad_hex_block(block: str, block_size: int = 16) -> str:
     return block.ljust(block_size, '0')
 
 def gamma_magma(mode="enc"):
-    # Ввод данных
-    if input("Вы вводите сообщение в hex? Y/N: ").strip().upper() == "Y":
-        message = input("Введите сообщение: ").strip()
-    else:
-        message = input("Введите сообщение: ").strip()
-        message = to_hex(message)
+    # Поблочный ввод сообщения: один раз вводим ключ и IV, затем множество блоков P_i / C_i.
+    print("Сообщение вводится поблочно (каждый блок — 16 hex-символов).")
 
     key = input("Введите ключ (64 hex-символа): ").strip()
-    IV = input("Введите инициализирующий вектор (8 hex-символов): ").strip()
-    IV = IV.ljust(16, '0')  # Делаем IV 16-символьным
+    IV = input("Введите инициализирующий вектор/синхропосылку (8 или 16 hex-символов): ").strip()
+    IV = IV.ljust(16, "0")  # Делаем IV 16-символьным
 
     # Проверка ключа и IV
+    try:
+        int(key, 16)
+    except Exception:
+        print("Ключ должен состоять из hex-символов!")
+        return
     if len(key) != 64:
         print("Ключ должен содержать 64 hex-символа!")
+        return
+
+    try:
+        int(IV, 16)
+    except Exception:
+        print("IV должен состоять из hex-символов!")
         return
     if len(IV) != 16:
         print("IV должен содержать 16 hex-символов!")
@@ -91,30 +102,50 @@ def gamma_magma(mode="enc"):
 
     keys = split_key(key)
     total = ""
-    blocks = [message[i:i+16] for i in range(0, len(message), 16)]
-    # Последний блок дополняем нулями, если не хватает
-    if len(blocks[-1]) < 16:
-        blocks[-1] = pad_hex_block(blocks[-1], 16)
-
     current_iv = IV
-    for idx, p_i in enumerate(blocks):
+    idx = 1
+
+    while True:
+        prompt = "Введите блок P{} (16 hex-символов, пусто — конец ввода): ".format(idx) if mode == "enc" else \
+                 "Введите блок C{} (16 hex-символов, пусто — конец ввода): ".format(idx)
+        block = input(prompt).strip()
+        if block == "":
+            break
+
+        try:
+            int(block, 16)
+        except Exception:
+            print("Блок должен состоять только из hex-символов (0-9, a-f).")
+            continue
+        if len(block) != 16:
+            print("Блок должен содержать ровно 16 hex-символов!")
+            continue
+
         ek = encrypt_block(current_iv, keys)
-        c_i = hex(int(ek, 16) ^ int(p_i, 16))[2:].zfill(16)
+        out_block = hex(int(ek, 16) ^ int(block, 16))[2:].zfill(16)
+
         if mode == "enc":
-            print(f'C{idx}: {c_i}')
-            total += c_i
+            print(f"C{idx}: {out_block}")
         else:
-            print(f'P{idx}: {c_i}')
-            total += c_i
+            print(f"P{idx}: {out_block}")
+
+        total += out_block
+
         # Увеличиваем IV
         current_iv = hex((int(current_iv, 16) + 1) % (1 << 64))[2:].zfill(16)
+        idx += 1
+
+    if not total:
+        print("Блоки не были введены.")
+        return
+
     print("\nРезультат (hex):")
     print(total)
     if mode == "dec":
-        # Обрезаем возможные лишние нули (если последний блок был дополнен)
-        total = total.rstrip('0')
+        # Обрезаем возможные лишние нули (если последний блок был дополнен при шифровании)
+        trimmed = total.rstrip("0")
         print("\nРасшифрованный текст:")
-        print(from_hex(total))
+        print(from_hex(trimmed))
 
 def main():
     print("Выберите режим работы:")

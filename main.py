@@ -23,6 +23,7 @@ from lab_4.vertical import encrypt as vertical_encrypt, decrypt as vertical_decr
 from lab_4.feistel import encrypt as feistel_encrypt, split_key, check_params
 from lab_4.cardano import encrypt_text as cardano_encrypt, decrypt_text as cardano_decrypt, run_cardano_gui
 from lab_5.shenon import shenon, check_conditions
+from lab_5.gost34_13_2015 import gamma_magma
 
 
 # Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
@@ -33,7 +34,7 @@ def show_main_menu():
     print(" 2. Шифр Цезаря         16. A5/2")
     print(" 3. Квадрат Полибия     17. МАГМА")
     print(" 4. Шифр Тритемия       18. Шифр Шеннона")
-    print(" 5. Шифр Белазо         19. AES")
+    print(" 5. Шифр Белазо         19. ГОСТ 34.13-2015")
     print(" 6. Шифр Виженера       20. Кузнечик")
     print(" 7. Магма               21. RSA")
     print(" 8. Матричный шифр      22. ElGamal")
@@ -145,6 +146,12 @@ def run_cipher(cipher_id, action, text):
             keys = list(keys)
             keys.reverse()
             return feistel_encrypt(text, keys)
+    if cipher_id == 19:
+        # Интерактивный режим ГОСТ 34.13-2015 (гаммирование Магма):
+        # все параметры и вывод берутся из gamma_magma, текст здесь не используется.
+        mode = "enc" if action == 1 else "dec"
+        gamma_magma(mode)
+        return None
     if cipher_id == 18:
         t0 = int(input("T0: ").strip())
         a = int(input("a: ").strip())
@@ -208,19 +215,26 @@ def main():
                 print("Введите 1, 2 или 3" + (" или 4" if n == 11 else "") + ".")
                 print()
                 continue
-
-            text = input("Введите текст для обработки: ").strip()
-            if not text:
-                print("Текст не введён.")
-                print()
-                continue
+            
+            # Для ГОСТ 34.13-2015 (пункт 19) текст вводится поблочно внутри gamma_magma,
+            # поэтому здесь запрос не нужен.
+            if n != 19:
+                text = input("Введите текст для обработки: ").strip()
+                if not text:
+                    print("Текст не введён.")
+                    print()
+                    continue
+            else:
+                text = ""
 
             try:
                 result = run_cipher(n, action, text)
-                if result is not None:
-                    print("Результат:", result)
-                else:
-                    print("Результат: Пока не реализовано.")
+                # Для ГОСТ 34.13-2015 вывод полностью делает gamma_magma.
+                if n != 19:
+                    if result is not None:
+                        print("Результат:", result)
+                    else:
+                        print("Результат: Пока не реализовано.")
             except ValueError as e:
                 print("Ошибка:", e)
 
