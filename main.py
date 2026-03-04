@@ -22,6 +22,7 @@ from lab_3.playfer import (
 from lab_4.vertical import encrypt as vertical_encrypt, decrypt as vertical_decrypt
 from lab_4.feistel import encrypt as feistel_encrypt, split_key, check_params
 from lab_4.cardano import encrypt_text as cardano_encrypt, decrypt_text as cardano_decrypt, run_cardano_gui
+from lab_5.shenon import shenon, check_conditions
 
 
 # Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
@@ -31,17 +32,18 @@ def show_main_menu():
     print(" 1. Шифр Атбаш          15. A5/1")
     print(" 2. Шифр Цезаря         16. A5/2")
     print(" 3. Квадрат Полибия     17. МАГМА")
-    print(" 4. Шифр Тритемия       19. AES")
-    print(" 5. Шифр Белазо         20. Кузнечик")
-    print(" 6. Шифр Виженера       21. RSA")
-    print(" 7. Магма               22. ElGamal")
-    print(" 8. Матричный шифр    23. ECC")
-    print(" 9. Шифр Плейфера     24. RSA (подпись)")
-    print("10. Вертикальная перест. 25. ElGamal (подпись)")
-    print("11. Решетка Кардано     26. ГОСТ 34.10-94")
-    print("12. Сеть Фейстеля       27. ГОСТ 34.10-2012")
-    print("13. Одноразовый блокнот 28. Диффи-Хеллман")
-    print("14. Гаммирование        29. Выход")
+    print(" 4. Шифр Тритемия       18. Шифр Шеннона")
+    print(" 5. Шифр Белазо         19. AES")
+    print(" 6. Шифр Виженера       20. Кузнечик")
+    print(" 7. Магма               21. RSA")
+    print(" 8. Матричный шифр      22. ElGamal")
+    print(" 9. Шифр Плейфера       23. ECC")
+    print("10. Вертикальная перест. 24. RSA (подпись)")
+    print("11. Решетка Кардано     25. ElGamal (подпись)")
+    print("12. Сеть Фейстеля       26. ГОСТ 34.10-94")
+    print("13. Одноразовый блокнот 27. ГОСТ 34.10-2012")
+    print("14. Гаммирование        28. Диффи-Хеллман")
+    print("                        29. Выход")
     print()
 
 
@@ -143,6 +145,22 @@ def run_cipher(cipher_id, action, text):
             keys = list(keys)
             keys.reverse()
             return feistel_encrypt(text, keys)
+    if cipher_id == 18:
+        t0 = int(input("T0: ").strip())
+        a = int(input("a: ").strip())
+        c = int(input("c: ").strip())
+        m = int(input("m: ").strip())
+        if not check_conditions(a, c, m, t0):
+            raise ValueError("не выполнены условия для генератора!")
+        if action == 1:
+            encrypted = shenon(text, t0, a, c, m)
+            return ' '.join(encrypted)
+        else:
+            text_clean = text.replace(' ', '')
+            decrypted = shenon(text_clean, t0, a, c, m, k=1)
+            if decrypted and len(decrypted) == 1 and decrypted[0].startswith("Ошибка:"):
+                raise ValueError(decrypted[0])
+            return ''.join(decrypted) if decrypted else ''
 
     return None
 
