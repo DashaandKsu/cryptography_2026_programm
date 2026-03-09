@@ -24,6 +24,8 @@ from lab_4.feistel import encrypt as feistel_encrypt, split_key, check_params
 from lab_4.cardano import encrypt_text as cardano_encrypt, decrypt_text as cardano_decrypt, run_cardano_gui
 from lab_5.shenon import shenon, check_conditions
 from lab_5.gost34_13_2015 import gamma_magma
+from lab_6.A5 import get_r1, gamma, encrypt_message_bytes, decrypt_message_bytes
+from lab_6.A52 import A_5_2_encryption, A_5_2_decryption
 
 
 # Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
@@ -146,6 +148,26 @@ def run_cipher(cipher_id, action, text):
             keys = list(keys)
             keys.reverse()
             return feistel_encrypt(text, keys)
+    if cipher_id == 15:
+        r1, r2, r3 = get_r1()
+        gamma_bits = gamma(r1[:], r2[:], r3[:])
+        if action == 1:
+            encrypted = encrypt_message_bytes(text, gamma_bits)
+            return ' '.join(encrypted)
+        else:
+            encrypted_array = text.strip().split()
+            return decrypt_message_bytes(encrypted_array, gamma_bits)
+    if cipher_id == 16:
+        key = input("Введите ключ: ").strip()
+        if not key:
+            raise ValueError("Ключ не может быть пустым")
+        if action == 1:
+            result = A_5_2_encryption(text, key)
+        else:
+            result = A_5_2_decryption(text, key)
+        if result.startswith("Ошибка") or result.startswith("Ключ") or result.startswith("Некорректная"):
+            raise ValueError(result)
+        return result
     if cipher_id == 19:
         # Интерактивный режим ГОСТ 34.13-2015 (гаммирование Магма):
         # все параметры и вывод берутся из gamma_magma, текст здесь не используется.
