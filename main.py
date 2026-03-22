@@ -1,5 +1,5 @@
 # Итоговая программа: меню выбора шифров.
-# Содержит только импорт функций из папок lab_1, lab_2, ... и их использование.
+# Содержит только импорт функций из папок lab_1, lab_2, ... lab_8 и их использование.
 
 # Импортируем функции шифрования и расшифрования Атбаш, Цезаря, Полибия, Тритемия, Белазо, Виженера, матричного шифра и Плэйфера
 from lab_1.atbash import encrypt_text as atbash_encrypt, decrypt_text as atbash_decrypt
@@ -24,8 +24,105 @@ from lab_4.feistel import encrypt as feistel_encrypt, split_key, check_params
 from lab_4.cardano import encrypt_text as cardano_encrypt, decrypt_text as cardano_decrypt, run_cardano_gui
 from lab_5.shenon import shenon, check_conditions
 from lab_5.gost34_13_2015 import gamma_magma
-from lab_6.A5 import get_r1, gamma, encrypt_message_bytes, decrypt_message_bytes
-from lab_6.A52 import A_5_2_encryption, A_5_2_decryption
+from lab_6 import utils as lab6_utils
+from lab_6.A5 import A5_1
+from lab_6.A52 import A5_2
+from lab_7.AES import AES_decryption, AES_encryption
+from lab_7.auxilary import split_by as lab7_split_by
+from lab_7.kuznechik import kuznechik_decrypt, kuznechik_encrypt, on_bytes, split_key as kuz_split_key
+from lab_7.MagmA import magma_decrypt as gost_magma_decrypt_block
+from lab_7.MagmA import magma_encrypt as gost_magma_encrypt_block
+from lab_7.MagmA import pkcs7_pad, pkcs7_unpad
+from lab_8.ECC import decrypt_text_ecc, encrypt_text_ecc
+from lab_8.ElGamal import decryption as elgamal_decrypt_raw, encrypt_elgamal, tchk_zpt_back
+from lab_8.RSA import des as rsa_decrypt_text, encrypt as rsa_encrypt_text
+
+
+def _hex_only(s: str) -> str:
+    return "".join(s.split()).lower()
+
+
+def _validate_hex_key_len(key_hex: str, n: int, label: str) -> None:
+    h = _hex_only(key_hex)
+    if len(h) != n or any(c not in "0123456789abcdef" for c in h):
+        raise ValueError(f"{label}: ровно {n} hex-символов (0–9, a–f).")
+
+
+def _gost_magma_crypt(text: str, key_hex: str, encrypt: bool) -> str:
+    """ГОСТ 28147-89 (Магма): блок 64 бит, ключ 256 бит, PKCS#7, UTF-8 для открытого текста."""
+    _validate_hex_key_len(key_hex, 64, "Ключ")
+    key_hex = _hex_only(key_hex)
+    if encrypt:
+        raw = text.encode("utf-8")
+        raw_padded = pkcs7_pad(raw, 8)
+        text_h = raw_padded.hex()
+        block_list = lab7_split_by(text_h, 16)
+        return "".join(
+            hex(gost_magma_encrypt_block(b, key_hex))[2:].zfill(16) for b in block_list
+        )
+    ct = _hex_only(text)
+    if len(ct) % 16 != 0:
+        raise ValueError("Шифртекст: hex без пробелов, длина кратна 16 символам.")
+    block_list = lab7_split_by(ct, 16)
+    decoded_hex = "".join(
+        hex(gost_magma_decrypt_block(b, key_hex))[2:].zfill(16) for b in block_list
+    )
+    plain = pkcs7_unpad(bytearray.fromhex(decoded_hex))
+    return plain.decode("utf-8")
+
+
+def _validate_binary_key_frame(key_str: str, frame_str: str) -> None:
+    if len(key_str) != 64 or not all(c in "01" for c in key_str):
+        raise ValueError("Ключ: ровно 64 символа 0 или 1.")
+    if len(frame_str) != 22 or not all(c in "01" for c in frame_str):
+        raise ValueError("Номер кадра: ровно 22 символа 0 или 1.")
+
+
+def _a5_1_crypt(text: str, key_str: str, frame_str: str, encrypt: bool) -> str:
+    """Шифртекст при encrypt=True — одна строка из 0/1 (bits_to_str), без правок lab_6/A5.py."""
+    _validate_binary_key_frame(key_str, frame_str)
+    key_bits = lab6_utils.str_to_bits(key_str)
+    frame_bits = lab6_utils.str_to_bits(frame_str)
+    if encrypt:
+        text_bits = lab6_utils.text_to_bits(text)
+        if not text_bits:
+            raise ValueError("Нет допустимых букв (алфавит 32 буквы А–Я без Ё, без пробелов).")
+        a5 = A5_1(key_bits, frame_bits)
+        ks = a5.generate_keystream(len(text_bits))
+        cipher_bits = [text_bits[i] ^ ks[i] for i in range(len(text_bits))]
+        return lab6_utils.bits_to_str(cipher_bits)
+    cipher_bits = lab6_utils.str_to_bits(text)
+    if not cipher_bits:
+        raise ValueError("Введите шифртекст как цепочку из 0 и 1 (пробелы можно).")
+    if len(cipher_bits) % 5 != 0:
+        raise ValueError("Длина шифртекста в битах должна быть кратна 5 (5 бит на букву).")
+    a5 = A5_1(key_bits, frame_bits)
+    ks = a5.generate_keystream(len(cipher_bits))
+    plain_bits = [cipher_bits[i] ^ ks[i] for i in range(len(cipher_bits))]
+    return lab6_utils.bits_to_text(plain_bits)
+
+
+def _a5_2_crypt(text: str, key_str: str, frame_str: str, encrypt: bool) -> str:
+    _validate_binary_key_frame(key_str, frame_str)
+    key_bits = lab6_utils.str_to_bits(key_str)
+    frame_bits = lab6_utils.str_to_bits(frame_str)
+    if encrypt:
+        text_bits = lab6_utils.text_to_bits(text)
+        if not text_bits:
+            raise ValueError("Нет допустимых букв (алфавит 32 буквы А–Я без Ё, без пробелов).")
+        a52 = A5_2(key_bits, frame_bits)
+        ks = a52.generate_keystream(len(text_bits))
+        cipher_bits = [text_bits[i] ^ ks[i] for i in range(len(text_bits))]
+        return lab6_utils.bits_to_str(cipher_bits)
+    cipher_bits = lab6_utils.str_to_bits(text)
+    if not cipher_bits:
+        raise ValueError("Введите шифртекст как цепочку из 0 и 1 (пробелы можно).")
+    if len(cipher_bits) % 5 != 0:
+        raise ValueError("Длина шифртекста в битах должна быть кратна 5 (5 бит на букву).")
+    a52 = A5_2(key_bits, frame_bits)
+    ks = a52.generate_keystream(len(cipher_bits))
+    plain_bits = [cipher_bits[i] ^ ks[i] for i in range(len(cipher_bits))]
+    return lab6_utils.bits_to_text(plain_bits)
 
 
 # Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
@@ -38,10 +135,10 @@ def show_main_menu():
     print(" 4. Шифр Тритемия       18. Шифр Шеннона")
     print(" 5. Шифр Белазо         19. ГОСТ 34.13-2015")
     print(" 6. Шифр Виженера       20. Кузнечик")
-    print(" 7. Магма               21. RSA")
+    print(" 7. Магма               21. AES")
     print(" 8. Матричный шифр      22. ElGamal")
     print(" 9. Шифр Плейфера       23. ECC")
-    print("10. Вертикальная перест. 24. RSA (подпись)")
+    print("10. Вертикальная перест. 24. RSA")
     print("11. Решетка Кардано     25. ElGamal (подпись)")
     print("12. Сеть Фейстеля       26. ГОСТ 34.10-94")
     print("13. Одноразовый блокнот 27. ГОСТ 34.10-2012")
@@ -149,25 +246,13 @@ def run_cipher(cipher_id, action, text):
             keys.reverse()
             return feistel_encrypt(text, keys)
     if cipher_id == 15:
-        r1, r2, r3 = get_r1()
-        gamma_bits = gamma(r1[:], r2[:], r3[:])
-        if action == 1:
-            encrypted = encrypt_message_bytes(text, gamma_bits)
-            return ' '.join(encrypted)
-        else:
-            encrypted_array = text.strip().split()
-            return decrypt_message_bytes(encrypted_array, gamma_bits)
+        key = input("Введите 64-битный ключ (64 символа 0 и 1): ").strip()
+        frame = input("Введите 22-битный номер кадра (22 символа 0 и 1): ").strip()
+        return _a5_1_crypt(text, key, frame, encrypt=(action == 1))
     if cipher_id == 16:
-        key = input("Введите ключ: ").strip()
-        if not key:
-            raise ValueError("Ключ не может быть пустым")
-        if action == 1:
-            result = A_5_2_encryption(text, key)
-        else:
-            result = A_5_2_decryption(text, key)
-        if result.startswith("Ошибка") or result.startswith("Ключ") or result.startswith("Некорректная"):
-            raise ValueError(result)
-        return result
+        key = input("Введите 64-битный ключ (64 символа 0 и 1): ").strip()
+        frame = input("Введите 22-битный номер кадра (22 символа 0 и 1): ").strip()
+        return _a5_2_crypt(text, key, frame, encrypt=(action == 1))
     if cipher_id == 19:
         # Интерактивный режим ГОСТ 34.13-2015 (гаммирование Магма):
         # все параметры и вывод берутся из gamma_magma, текст здесь не используется.
@@ -190,6 +275,72 @@ def run_cipher(cipher_id, action, text):
             if decrypted and len(decrypted) == 1 and decrypted[0].startswith("Ошибка:"):
                 raise ValueError(decrypted[0])
             return ''.join(decrypted) if decrypted else ''
+    if cipher_id == 17:
+        key = input("Введите 256-битный ключ (64 hex-символа): ").strip()
+        return _gost_magma_crypt(text, key, encrypt=(action == 1))
+    if cipher_id == 20:
+        key_input = input("Введите ключ (64 hex-символа): ").strip()
+        key = kuz_split_key(key_input, 32)
+        msg = _hex_only(text)
+        if action == 1:
+            if len(msg) != 32:
+                raise ValueError("Сообщение: ровно 32 hex-символа (128 бит блока).")
+            shifr = kuznechik_encrypt(msg, key)
+            return "".join(x[2:] for x in shifr)
+        if len(msg) != 32:
+            raise ValueError("Шифртекст: ровно 32 hex-символа.")
+        shifr_bytes = on_bytes("0x" + msg)
+        deshifr = kuznechik_decrypt(shifr_bytes, key)
+        return "".join(x[2:] for x in deshifr)
+    if cipher_id == 21:
+        key_aes = input("Введите ключ AES (32 hex-символа, 128 бит): ").strip()
+        th = _hex_only(text)
+        if action == 1:
+            if len(th) % 32 != 0:
+                raise ValueError(
+                    "Открытый текст: hex, длина кратна 32 символам (AES-128 по блокам)."
+                )
+            out = AES_encryption(th, key_aes, "Да")
+        else:
+            if len(th) % 32 != 0:
+                raise ValueError("Шифртекст: hex, длина кратна 32 символам.")
+            out = AES_decryption(th, key_aes, "Да")
+        if isinstance(out, str) and out.startswith("Неверный"):
+            raise ValueError(out)
+        return out
+    if cipher_id == 22:
+        if action == 1:
+            p = int(input("Введите p (простое число > 32): ").strip())
+            g = int(input("Введите g (основание): ").strip())
+            x = int(input("Введите секретный ключ x: ").strip())
+            cipher, p_, g_, y = encrypt_elgamal(text, p, g, x)
+            print(f"Открытый ключ: p={p_}, g={g_}, y={y}")
+            return cipher
+        p = int(input("Введите модуль p: ").strip())
+        x = int(input("Введите секретный ключ x: ").strip())
+        plain = elgamal_decrypt_raw(p, x, text)
+        return tchk_zpt_back(plain)
+    if cipher_id == 23:
+        a = int(input("Введите параметр кривой a: ").strip())
+        b = int(input("Введите параметр кривой b: ").strip())
+        p_mod = int(input("Введите модуль p (простое): ").strip())
+        if action == 1:
+            g_line = input("Введите точку G как x,y: ").strip()
+            gx, gy = [int(t.strip()) for t in g_line.split(",")]
+            G = [gx, gy]
+            cb = int(input("Введите закрытый ключ Cb: ").strip())
+            k = int(input("Введите одноразовый ключ k: ").strip())
+            return encrypt_text_ecc(text, a, b, p_mod, G, cb, k)
+        cb = int(input("Введите закрытый ключ Cb: ").strip())
+        return decrypt_text_ecc(text, a, b, p_mod, cb)
+    if cipher_id == 24:
+        if action == 1:
+            n = int(input("Введите модуль n: ").strip())
+            e = int(input("Введите открытую экспоненту e: ").strip())
+            return rsa_encrypt_text(text, n, e)
+        n = int(input("Введите модуль n: ").strip())
+        d = int(input("Введите секретную экспоненту d: ").strip())
+        return rsa_decrypt_text(text, n, d)
 
     return None
 
