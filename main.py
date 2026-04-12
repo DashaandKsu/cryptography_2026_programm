@@ -1,5 +1,5 @@
 # Итоговая программа: меню выбора шифров.
-# Содержит только импорт функций из папок lab_1, lab_2, ... lab_8 и их использование.
+# Импорты из lab_1 … lab_9 и единый терминальный сценарий (как при запуске исходных файлов).
 
 # Импортируем функции шифрования и расшифрования Атбаш, Цезаря, Полибия, Тритемия, Белазо, Виженера, матричного шифра и Плэйфера
 from lab_1.atbash import encrypt_text as atbash_encrypt, decrypt_text as atbash_decrypt
@@ -25,8 +25,8 @@ from lab_4.cardano import encrypt_text as cardano_encrypt, decrypt_text as carda
 from lab_5.shenon import shenon, check_conditions
 from lab_5.gost34_13_2015 import gamma_magma
 from lab_6 import utils as lab6_utils
-from lab_6.A5 import A5_1
-from lab_6.A52 import A5_2
+from lab_6.A5 import encrypt_decrypt as a5_encrypt_decrypt
+from lab_6.A52 import encrypt_decrypt as a52_encrypt_decrypt
 from lab_7.AES import AES_decryption, AES_encryption
 from lab_7.auxilary import split_by as lab7_split_by
 from lab_7.kuznechik import kuznechik_decrypt, kuznechik_encrypt, on_bytes, split_key as kuz_split_key
@@ -36,6 +36,16 @@ from lab_7.MagmA import pkcs7_pad, pkcs7_unpad
 from lab_8.ECC import decrypt_text_ecc, encrypt_text_ecc
 from lab_8.ElGamal import decryption as elgamal_decrypt_raw, encrypt_elgamal, tchk_zpt_back
 from lab_8.RSA import des as rsa_decrypt_text, encrypt as rsa_encrypt_text
+from lab_8.ECC_codirovanie import main as ecc_codirovanie_main
+from lab_9 import ElGamal_CP as elgamal_cp
+from lab_9 import RSA_CP as rsa_cp
+
+
+class _AlreadyPrinted:
+    """Результат: весь вывод уже сделан внутри run_cipher (подписи, ГОСТ 34.13 и т.д.)."""
+
+
+ALREADY_PRINTED = _AlreadyPrinted()
 
 
 def _hex_only(s: str) -> str:
@@ -71,61 +81,7 @@ def _gost_magma_crypt(text: str, key_hex: str, encrypt: bool) -> str:
     return plain.decode("utf-8")
 
 
-def _validate_binary_key_frame(key_str: str, frame_str: str) -> None:
-    if len(key_str) != 64 or not all(c in "01" for c in key_str):
-        raise ValueError("Ключ: ровно 64 символа 0 или 1.")
-    if len(frame_str) != 22 or not all(c in "01" for c in frame_str):
-        raise ValueError("Номер кадра: ровно 22 символа 0 или 1.")
-
-
-def _a5_1_crypt(text: str, key_str: str, frame_str: str, encrypt: bool) -> str:
-    """Шифртекст при encrypt=True — одна строка из 0/1 (bits_to_str), без правок lab_6/A5.py."""
-    _validate_binary_key_frame(key_str, frame_str)
-    key_bits = lab6_utils.str_to_bits(key_str)
-    frame_bits = lab6_utils.str_to_bits(frame_str)
-    if encrypt:
-        text_bits = lab6_utils.text_to_bits(text)
-        if not text_bits:
-            raise ValueError("Нет допустимых букв (алфавит 32 буквы А–Я без Ё, без пробелов).")
-        a5 = A5_1(key_bits, frame_bits)
-        ks = a5.generate_keystream(len(text_bits))
-        cipher_bits = [text_bits[i] ^ ks[i] for i in range(len(text_bits))]
-        return lab6_utils.bits_to_str(cipher_bits)
-    cipher_bits = lab6_utils.str_to_bits(text)
-    if not cipher_bits:
-        raise ValueError("Введите шифртекст как цепочку из 0 и 1 (пробелы можно).")
-    if len(cipher_bits) % 5 != 0:
-        raise ValueError("Длина шифртекста в битах должна быть кратна 5 (5 бит на букву).")
-    a5 = A5_1(key_bits, frame_bits)
-    ks = a5.generate_keystream(len(cipher_bits))
-    plain_bits = [cipher_bits[i] ^ ks[i] for i in range(len(cipher_bits))]
-    return lab6_utils.bits_to_text(plain_bits)
-
-
-def _a5_2_crypt(text: str, key_str: str, frame_str: str, encrypt: bool) -> str:
-    _validate_binary_key_frame(key_str, frame_str)
-    key_bits = lab6_utils.str_to_bits(key_str)
-    frame_bits = lab6_utils.str_to_bits(frame_str)
-    if encrypt:
-        text_bits = lab6_utils.text_to_bits(text)
-        if not text_bits:
-            raise ValueError("Нет допустимых букв (алфавит 32 буквы А–Я без Ё, без пробелов).")
-        a52 = A5_2(key_bits, frame_bits)
-        ks = a52.generate_keystream(len(text_bits))
-        cipher_bits = [text_bits[i] ^ ks[i] for i in range(len(text_bits))]
-        return lab6_utils.bits_to_str(cipher_bits)
-    cipher_bits = lab6_utils.str_to_bits(text)
-    if not cipher_bits:
-        raise ValueError("Введите шифртекст как цепочку из 0 и 1 (пробелы можно).")
-    if len(cipher_bits) % 5 != 0:
-        raise ValueError("Длина шифртекста в битах должна быть кратна 5 (5 бит на букву).")
-    a52 = A5_2(key_bits, frame_bits)
-    ks = a52.generate_keystream(len(cipher_bits))
-    plain_bits = [cipher_bits[i] ^ ks[i] for i in range(len(cipher_bits))]
-    return lab6_utils.bits_to_text(plain_bits)
-
-
-# Выводит в консоль главное меню программы: список доступных шифров (1–28) и пункт «Выход» (29), чтобы пользователь выбрал, каким алгоритмом шифровать или расшифровывать текст.
+# Выводит в консоль главное меню программы: список доступных шифров и пункт «Выход».
 def show_main_menu():
     """Вывод главного меню выбора шифра (два столбца)."""
     print("Выберите шифр:")
@@ -140,10 +96,12 @@ def show_main_menu():
     print(" 9. Шифр Плейфера       23. ECC")
     print("10. Вертикальная перест. 24. RSA")
     print("11. Решетка Кардано     25. ElGamal (подпись)")
-    print("12. Сеть Фейстеля       26. ГОСТ 34.10-94")
-    print("13. Одноразовый блокнот 27. ГОСТ 34.10-2012")
-    print("14. Гаммирование        28. Диффи-Хеллман")
-    print("                        29. Выход")
+    print("12. Сеть Фейстеля       26. RSA (цифровая подпись)")
+    print("13. Одноразовый блокнот 27. ECC: кодирование текста")
+    print("14. Гаммирование        28. ГОСТ 34.10-94")
+    print("                        29. ГОСТ 34.10-2012")
+    print("                        30. Диффи-Хеллман")
+    print("                        31. Выход")
     print()
 
 
@@ -162,7 +120,7 @@ def show_action_menu(cipher_id=None):
 def run_cipher(cipher_id, action, text):
     """
     Вызов нужной функции шифрования или расшифрования по номеру шифра.
-    cipher_id: 1-28, action: 1 или 2, text: строка для обработки.
+    cipher_id: 1-30 (и служебные сценарии), action: 1 или 2, text: строка для обработки.
     """
     if cipher_id == 1:
         if action == 1:
@@ -246,13 +204,46 @@ def run_cipher(cipher_id, action, text):
             keys.reverse()
             return feistel_encrypt(text, keys)
     if cipher_id == 15:
-        key = input("Введите 64-битный ключ (64 символа 0 и 1): ").strip()
-        frame = input("Введите 22-битный номер кадра (22 символа 0 и 1): ").strip()
-        return _a5_1_crypt(text, key, frame, encrypt=(action == 1))
+        # Как в lab_6/A5.py: ключ — текст по алфавиту, кадр — десятичное 0..4194303.
+        key = input(
+            "Введите ключ (текст, буквы алфавита АБВ…Я; кодируется в 64 бита по 5 бит на букву): "
+        ).strip()
+        frame_raw = input(
+            "Введите номер кадра (целое десятичное число 0..4194303, 22 бита): "
+        ).strip()
+        try:
+            frame_num = int(frame_raw, 10)
+        except ValueError:
+            raise ValueError(
+                "Ошибка: номер кадра должен быть целым числом в десятичной записи."
+            ) from None
+        try:
+            lab6_utils.frame_decimal_to_bits(frame_num, 22)
+        except ValueError as e:
+            raise ValueError(str(e)) from None
+        return a5_encrypt_decrypt(text, key, frame_num)
     if cipher_id == 16:
-        key = input("Введите 64-битный ключ (64 символа 0 и 1): ").strip()
-        frame = input("Введите 22-битный номер кадра (22 символа 0 и 1): ").strip()
-        return _a5_2_crypt(text, key, frame, encrypt=(action == 1))
+        key = input(
+            "Введите ключ (текст, буквы алфавита АБВ…Я; кодируется в 64 бита по 5 бит на букву): "
+        ).strip()
+        if not lab6_utils.text_to_bits(key):
+            raise ValueError(
+                "Ошибка: в ключе нет букв из алфавита (32 буквы АБВ…Я)."
+            )
+        frame_raw = input(
+            "Введите номер кадра (целое десятичное число 0..4194303, 22 бита): "
+        ).strip()
+        try:
+            frame_num = int(frame_raw, 10)
+        except ValueError:
+            raise ValueError(
+                "Ошибка: номер кадра должен быть целым числом в десятичной записи."
+            ) from None
+        try:
+            lab6_utils.frame_decimal_to_bits(frame_num, 22)
+        except ValueError as e:
+            raise ValueError(str(e)) from None
+        return a52_encrypt_decrypt(text, key, frame_num)
     if cipher_id == 19:
         # Интерактивный режим ГОСТ 34.13-2015 (гаммирование Магма):
         # все параметры и вывод берутся из gamma_magma, текст здесь не используется.
@@ -342,6 +333,41 @@ def run_cipher(cipher_id, action, text):
         d = int(input("Введите секретную экспоненту d: ").strip())
         return rsa_decrypt_text(text, n, d)
 
+    if cipher_id == 25:
+        # lab_9/ElGamal_CP.py — те же запросы, что в интерактивном main().
+        if action == 1:
+            P = int(input("Введите простое число P > 32: ").strip())
+            if not elgamal_cp.is_prime(P):
+                print("Ошибка: P должно быть простым числом!")
+                return ALREADY_PRINTED
+            G = int(input("Введите G (1 < G < P): ").strip())
+            if G <= 1 or G >= P:
+                print("Ошибка: G должно быть в диапазоне (1, P)")
+                return ALREADY_PRINTED
+            X = int(input(f"Введите секретный ключ X (1 < X < {P - 1}): ").strip())
+            if not (1 < X < P - 1):
+                print("Ошибка: X вне диапазона")
+                return ALREADY_PRINTED
+            plain = input("Введите текст для подписи: ")
+            plain = elgamal_cp.tchk_zpt(plain)
+            result = elgamal_cp.encryption(P, G, X, plain)
+            if result:
+                a, b, Y, G_ = result
+                print(f"Подпись: ({a},{b})")
+                print(f"Открытый ключ: Y = {Y}, G = {G_}, P = {P}")
+            return ALREADY_PRINTED
+        plain = input("Введите текст для проверки подписи: ")
+        plain = elgamal_cp.tchk_zpt(plain)
+        elgamal_cp.decryption(plain)
+        return ALREADY_PRINTED
+
+    if cipher_id == 26:
+        if action == 1:
+            rsa_cp.create_signature()
+        else:
+            rsa_cp.check_signature()
+        return ALREADY_PRINTED
+
     return None
 
 
@@ -350,19 +376,38 @@ def main():
     while True:
         show_main_menu()
         try:
-            choice = input("Введите номер шифра (1-29): ").strip()
+            choice = input("Введите номер шифра (1-31): ").strip()
             n = int(choice)
         except ValueError:
-            print("Введите число от 1 до 29.")
+            print("Введите число от 1 до 31.")
             print()
             continue
 
-        if n == 29:
+        if n == 31:
             print("Выход.")
             break
 
-        if n < 1 or n > 28:
-            print("Нет такого пункта. Введите 1-29.")
+        if n < 1 or n > 30:
+            print("Нет такого пункта. Введите 1-31.")
+            print()
+            continue
+
+        # lab_8/ECC_codirovanie.py — один прогон, как при прямом запуске файла.
+        if n == 27:
+            try:
+                ecc_codirovanie_main()
+            except SystemExit:
+                raise
+            except Exception as e:
+                print("Ошибка:", e)
+            print()
+            continue
+
+        if n in (28, 29, 30):
+            print(
+                "В каталоге проекта нет отдельного скрипта для этого пункта "
+                "(ожидаются лабораторные файлы ГОСТ 34.10 / Диффи-Хеллман)."
+            )
             print()
             continue
 
@@ -388,10 +433,10 @@ def main():
                 print("Введите 1, 2 или 3" + (" или 4" if n == 11 else "") + ".")
                 print()
                 continue
-            
-            # Для ГОСТ 34.13-2015 (пункт 19) текст вводится поблочно внутри gamma_magma,
-            # поэтому здесь запрос не нужен.
-            if n != 19:
+
+            skip_global_text = n in (25, 26)
+            # Для ГОСТ 34.13-2015 (пункт 19) текст вводится поблочно внутри gamma_magma.
+            if n != 19 and not skip_global_text:
                 text = input("Введите текст для обработки: ").strip()
                 if not text:
                     print("Текст не введён.")
@@ -402,12 +447,24 @@ def main():
 
             try:
                 result = run_cipher(n, action, text)
-                # Для ГОСТ 34.13-2015 вывод полностью делает gamma_magma.
-                if n != 19:
-                    if result is not None:
-                        print("Результат:", result)
+                if n == 19:
+                    pass
+                elif result is ALREADY_PRINTED:
+                    pass
+                elif n in (15, 16):
+                    if action == 1:
+                        print("Зашифрованный текст:", result)
                     else:
-                        print("Результат: Пока не реализовано.")
+                        print("Расшифрованный текст:", result)
+                elif n == 20:
+                    if action == 1:
+                        print("SHIFR =", result)
+                    else:
+                        print("DESHIFR =", result)
+                elif result is not None:
+                    print("Результат:", result)
+                else:
+                    print("Результат: Пока не реализовано.")
             except ValueError as e:
                 print("Ошибка:", e)
 

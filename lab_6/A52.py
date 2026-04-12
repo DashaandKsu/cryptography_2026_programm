@@ -141,10 +141,13 @@ class A5_2:
         return keystream
 
 
-def encrypt_decrypt(text: str, key_str: str, frame_str: str) -> str:
-    """Шифрование/расшифрование текста с A5/2."""
-    key_bits = utils.str_to_bits(key_str)
-    frame_bits = utils.str_to_bits(frame_str)
+def encrypt_decrypt(text: str, key_text: str, frame_number: int) -> str:
+    """
+    Шифрование/расшифрование текста с A5/2.
+    key_text — текст ключа по ALPHABET → 64 бита; frame_number — кадр 0..2^22-1 (десятичное).
+    """
+    key_bits = utils.key_text_to_bits(key_text, 64)
+    frame_bits = utils.frame_decimal_to_bits(frame_number, 22)
     text_bits = utils.text_to_bits(text)
 
     a5 = A5_2(key_bits, frame_bits)
@@ -162,17 +165,29 @@ def main():
         return
 
     text = input("Введите текст: ").strip()
-    key = input("Введите 64-битный ключ (последовательность 0 и 1): ").strip()
-    frame = input("Введите 22-битный номер кадра (последовательность 0 и 1): ").strip()
+    key = input(
+        "Введите ключ (текст, буквы алфавита АБВ…Я; кодируется в 64 бита по 5 бит на букву): "
+    ).strip()
+    frame_raw = input(
+        "Введите номер кадра (целое десятичное число 0..4194303, 22 бита): "
+    ).strip()
 
-    if len(key) != 64 or not all(c in "01" for c in key):
-        print("Ошибка: ключ должен быть ровно 64 бита.")
-        return
-    if len(frame) != 22 or not all(c in "01" for c in frame):
-        print("Ошибка: номер кадра должен быть ровно 22 бита.")
+    if not utils.text_to_bits(key):
+        print("Ошибка: в ключе нет букв из алфавита (32 буквы АБВ…Я).")
         return
 
-    result = encrypt_decrypt(text, key, frame)
+    try:
+        frame_num = int(frame_raw, 10)
+    except ValueError:
+        print("Ошибка: номер кадра должен быть целым числом в десятичной записи.")
+        return
+    try:
+        utils.frame_decimal_to_bits(frame_num, 22)
+    except ValueError as e:
+        print("Ошибка:", e)
+        return
+
+    result = encrypt_decrypt(text, key, frame_num)
     if choice == "1":
         print("Зашифрованный текст:", result)
     else:
@@ -181,3 +196,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Кадр 1101001011001011010010 (двоичный) = 3453650 (десятичный ввод)

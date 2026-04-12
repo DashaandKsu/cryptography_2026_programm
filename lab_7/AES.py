@@ -318,19 +318,14 @@ def AES_encryption(text, key, flag_hex="Да"):
     # Шифрование по блокам по 32 hex-символа (128 бит)
     for i in range(0, len(text), 32):
         text_ = int(text[i:(i+32)], 16)  # Текущий блок текста
-        temp = hex(AES1.encrypt(text_))[2:]  # Шифрование блока
-        while (len(temp) % 32 != 0):  # Дополнение нулями до 32 символов
-            temp = '0' + temp
-        encrypted += temp  # Добавление к результату
+        # Шифртекст блока — ровно 32 шестнадцатеричные цифры (нижний регистр)
+        encrypted += format(AES1.encrypt(text_), "032x")
 
     # Обработка последнего неполного блока
     lack = len(encrypted) % 32
     if lack != 0:
         text_ = int(text[(-1)*lack - 1:], 16)  # Последний неполный блок
-        temp = hex(AES1.encrypt(text_))[2:]  # Шифрование блока
-        while (len(temp) % 32 != 0):  # Дополнение нулями
-            temp = '0' + temp
-        encrypted += temp  # Добавление к результату
+        encrypted += format(AES1.encrypt(text_), "032x")
 
     if flag_hex == "Да":  # Если нужен hex-результат
         return encrypted
@@ -362,20 +357,14 @@ def AES_decryption(text, key, flag_hex="Да"):
     # Расшифрование по блокам по 32 hex-символа (128 бит)
     for i in range(0, len(text), 32):
         text_ = int(text[i:(i + 32)], 16)  # Текущий блок текста
-        temp = hex(AES1.decrypt(text_))[2:]  # Расшифрование блока
-        while (len(temp) % 32 != 0):  # Дополнение нулями до 32 символов
-            temp = '0' + temp
-        decrypted += temp  # Добавление к результату
-    
+        decrypted += format(AES1.decrypt(text_), "032x")
+
     # Обработка последнего неполного блока
     lack = len(decrypted) % 32
     if lack != 0:
         text_ = int(text[(-1) * lack - 1:], 16)  # Последний неполный блок
-        temp = hex(AES1.decrypt(text_))[2:]  # Расшифрование блока
-        while (len(temp) % 32 != 0):  # Дополнение нулями
-            temp = '0' + temp
-        decrypted += temp  # Добавление к результату
-    
+        decrypted += format(AES1.decrypt(text_), "032x")
+
     if flag_hex == "Да":  # Если нужен hex-результат
         return decrypted
     else:  # Если нужен текстовый результат

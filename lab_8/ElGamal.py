@@ -37,10 +37,11 @@ def encrypt_elgamal(text, p, g, x):
     y = pow(g, x, p)
     encrypted = []
     for num in nums:
-        k = random.randint(2, f - 1)
+        k = random.randint(2, f - 1) # случайное число k в диапазоне 2 до f-1, для каждого символа уже выбирается свой случайный k, Случайность «спрятана» в k: при том же m другой k даёт другие a и b.
+        print("K = ", k)
         while math.gcd(k, f) != 1:
             k = random.randint(2, f - 1)
-        a = pow(g, k, p)
+        a = pow(g, k, p) # вычисление a = g^k mod p
         b = (pow(y, k, p) * num) % p
         encrypted.append(f"{a}.{b}")
     cipher = " ".join(encrypted)
@@ -93,3 +94,26 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""1. Зашифровать
+2. Расшифровать
+> 1
+Введите текст: макадамия
+Введите p (простое >32): 47
+Введите секретный ключ x (1<46): 3
+Введите g (1<46): 3
+K =  18
+K =  5
+K =  11
+K =  29
+K =  13
+K =  16
+K =  44
+K =  32
+K =  45
+
+Открытые ключи: p=47, g=3, y=27
+
+Результат шифрования:
+7.41 8.42 4.46 24.6 36.19 21.2 28.39 18.36 16.36"""

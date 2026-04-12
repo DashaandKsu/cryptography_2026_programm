@@ -47,3 +47,27 @@ def str_to_bits(s: str) -> list[int]:
 def bits_to_str(bits: list[int]) -> str:
     """Преобразует список битов в строку вида '0101'."""
     return "".join(str(b) for b in bits)
+
+
+def key_text_to_bits(text: str, n_bits: int = 64) -> list[int]:
+    """
+    Ключ вводится как текст по тому же алфавиту, что и открытый текст (5 бит на букву).
+    Если битов меньше n_bits — дополняем нулями справа (младшие разряды);
+    если больше — берём первые n_bits (старшие биты первыми, как в text_to_bits).
+    """
+    raw = text_to_bits(text)
+    if len(raw) >= n_bits:
+        return raw[:n_bits]
+    return raw + [0] * (n_bits - len(raw))
+
+
+def frame_decimal_to_bits(frame_number: int, n_bits: int = 22) -> list[int]:
+    """
+    Номер кадра в десятичной записи → n_bits бит, старший бит первый
+    (как у двоичной строки вида '1101001011001011010010').
+    """
+    if frame_number < 0 or frame_number >= (1 << n_bits):
+        raise ValueError(
+            f"Номер кадра должен быть в диапазоне 0..{2**n_bits - 1} ({n_bits} бит)"
+        )
+    return [(frame_number >> i) & 1 for i in range(n_bits - 1, -1, -1)]

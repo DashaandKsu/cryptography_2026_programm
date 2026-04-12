@@ -46,13 +46,13 @@ class LFSR:
 
         # если подан внешний бит, добавляем его
         if feedback_bit is not None:
-            fb ^= feedback_bit
+            fb ^= feedback_bit  #вычисляется начальный бит, который будет добавлен в состояние
 
         # запоминаем выходной бит (старший)
-        out = self.state[-1]
+        out = self.state[-1] #выходной бит - последний бит состояния
 
         # сдвиг: все биты смещаются в сторону старших, младшим становится fb
-        self.state = [fb] + self.state[:-1]
+        self.state = [fb] + self.state[:-1] #новый младший бит добавляется в начало состояния регистра, а все остальные сдвигаются на один бит
 
         return out
 
@@ -91,17 +91,28 @@ class A5_1:
         for length, taps in self.REG_PARAMS:
             self.regs.append(LFSR(length, taps))
 
+#С нулями начинается только старт. Дальше при инициализации ключа (64 такта)
+#  и кадра (22 такта) на каждый такт в каждый регистр через clock(feedback_bit=...) 
+# подмешивается очередной бит ключа/кадра: он XOR-ится с обратной связью, результат становится новым младшим битом, 
+# остальное сдвигается. За эти такты нули полностью «вытесняются» — 
+# в регистрах уже нет исходных нулей, а состояние, смешанное с ключом и номером кадра. 
+# Потом идут 100 холостых тактов с мажоритарным тактированием — состояние ещё перемешивается.
         # Инициализация ключом
         for i in range(64):
             bit = key_bits[i]  # здесь i идёт по порядку (0 = старший бит ключа)
-            for reg in self.regs:
-                reg.clock(feedback_bit=bit)
+            for reg in self.regs: #для каждого регистра в списке self.regs
+                reg.clock(feedback_bit=bit) #Третий регистр — это self.regs[2] (в списке после R1 и R2).
+                # На каждом из 64 тактов вызывается self.regs[2].clock(feedback_bit=bit) — то же самое, 
+                # что для первого и второго, только это отдельный объект
+
+        #каждый бит ключа последовательно записывается в самый младший бит каждого регистра
+        #  после операции XOR с сигналом обратной связи
 
         # Инициализация номером кадра
         for i in range(22):
             bit = frame_bits[i]
             for reg in self.regs:
-                reg.clock(feedback_bit=bit)
+                reg.clock(feedback_bit=bit) #тактирование регистра с подачей бита feedback_bit
 
         # 100 холостых тактов с мажоритарным тактированием (без выхода)
         for _ in range(100):
@@ -143,15 +154,14 @@ class A5_1:
         return keystream
 
 
-def encrypt_decrypt(text: str, key_str: str, frame_str: str) -> str:
+def encrypt_decrypt(text: str, key_text: str, frame_number: int) -> str:
     """
     Шифрование (и расшифрование) русского текста с помощью A5/1.
-    key_str   : строка из 64 символов '0'/'1' (старший бит первый)
-    frame_str : строка из 22 символов '0'/'1' (старший бит первый)
+    key_text     : ключ как текст по алфавиту utils.ALPHABET → 64 бита (дополнение нулями при необходимости)
+    frame_number : номер кадра 0..2^22-1 (ввод в десятичной системе)
     """
-    # Преобразуем входные данные в биты
-    key_bits = utils.str_to_bits(key_str)
-    frame_bits = utils.str_to_bits(frame_str)
+    key_bits = utils.key_text_to_bits(key_text, 64)
+    frame_bits = utils.frame_decimal_to_bits(frame_number, 22)
     text_bits = utils.text_to_bits(text)
 
     # Создаём экземпляр шифра и генерируем ключевой поток
@@ -173,17 +183,30 @@ def main():
         return
 
     text = input("Введите текст: ").strip()
-    key = input("Введите 64-битный ключ (последовательность 0 и 1): ").strip()
-    frame = input("Введите 22-битный номер кадра (последовательность 0 и 1): ").strip()
+    key = input(
+        "Введите ключ (текст, буквы алфавита АБВ…Я; кодируется в 64 бита по 5 бит на букву): "
+    ).strip()
+    frame_raw = input(
+        "Введите номер кадра (целое десятичное число 0..4194303, 22 бита): "
+    ).strip()
 
-    if len(key) != 64 or not all(c in "01" for c in key):
-        print("Ошибка: ключ должен быть ровно 64 бита и состоять из 0 и 1.")
+    """preview_bits = utils.text_to_bits(key)
+    if not preview_bits:
+        print("Ошибка: в ключе нет букв из алфавита (32 буквы АБВ…Я).")
+        return"""
+
+    try:
+        frame_num = int(frame_raw, 10)
+    except ValueError:
+        print("Ошибка: номер кадра должен быть целым числом в десятичной записи.")
         return
-    if len(frame) != 22 or not all(c in "01" for c in frame):
-        print("Ошибка: номер кадра должен быть ровно 22 бита.")
+    try:
+        utils.frame_decimal_to_bits(frame_num, 22)
+    except ValueError as e:
+        print("Ошибка:", e)
         return
 
-    result = encrypt_decrypt(text, key, frame)
+    result = encrypt_decrypt(text, key, frame_num)
     if choice == "1":
         print("Зашифрованный текст:", result)
     else:
@@ -193,5 +216,11 @@ def main():
 if __name__ == "__main__":
     main()
 
-#Реализован тот же принцип (гаммирование по A5), но выбрана 
-# другая оцифровка текста и формат вывода
+# Пример: ключ как текст (тот же алфавит); кадр в десятичной системе
+# двоичный кадр 1101001011001011010010 → десятичное 3453650
+
+
+
+#непонятно как построена конструкция self.regs.append(LFSR(length, taps)), где выводятся значения регистров
+#в ручном тесте будет видна проблема с регистрами и их значениями
+
