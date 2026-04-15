@@ -1,202 +1,389 @@
-import math
+"""
+ПРОСТАЯ ПРОГРАММА ДЛЯ ECC ШИФРОВАНИЯ
+С поддержкой:
+ Ручного ввода параметров
+ Тестирования
+"""
 
-# Расширенный алфавит (добавьте нужные символы)
-alphabet = (
-    'абвгдежзийклмнопрстуфхцчшщъыьэюя'
-    ' .,;:-—!?()«»"0123456789'
-)
+import random
 
-def text_to_k_sequence(text, alphabet):
-    seq = []
-    for ch in text.lower():
-        if ch in alphabet:
-            seq.append(alphabet.index(ch) + 1)
-        else:
-            raise ValueError(
-                f"Символ '{ch}' не входит в алфавит ECC. Добавьте его в alphabet."
-            )
-    return seq
+#  ОСНОВНЫЕ ФУНКЦИИ 
 
-def k_sequence_to_text(seq, alphabet):
-    text = ''
-    for k in seq:
-        if 1 <= k <= len(alphabet):
-            text += alphabet[k-1]
-        else:
-            text += '?'
-    return text
+def mod_inverse(n, p):
+    """Находит обратный элемент числа n по модулю p"""
+    try:
+        return pow(n, p - 2, p)
+    except ValueError:
+        return 0
 
-def reverse_n(n, module):
-    n = n % module
-    for i in range(1, module):
-        if (n * i) % module == 1:
-            return i
-    raise ValueError(f"Нет обратного элемента для {n} по модулю {module}")
+def point_double(P, a, p):
+    """Удвоение точки P"""
+    if P is None:
+        return None
+    x, y = P
+    if y == 0:
+        return None
+    lambd = (3 * x * x + a) * mod_inverse(2 * y, p) % p
+    x3 = (lambd * lambd - 2 * x) % p
+    y3 = (lambd * (x - x3) - y) % p
+    return (x3, y3)
 
-def double(G, a, p, step):
-    x = G[0]
-    y = G[1]
-    # Подробный вывод можно отключить, если не нужен
-    numerator = 3 * x ** 2 + a
-    denominator = 2 * y
-    inv = reverse_n(denominator, p)
-    lamb = (numerator * inv) % p
-    new_x = (lamb ** 2 - 2 * x) % p
-    new_y = (lamb * (x - new_x) - y) % p
-    return [new_x, new_y]
+def point_add(P, Q, a, p):
+    """Сложение двух точек P и Q"""
+    if P is None:
+        return Q
+    if Q is None:
+        return P
+    x1, y1 = P
+    x2, y2 = Q
+    if x1 == x2 and (y1 + y2) % p == 0:
+        return None
+    if x1 == x2 and y1 == y2:
+        return point_double(P, a, p)
+    lambd = (y2 - y1) * mod_inverse(x2 - x1, p) % p
+    x3 = (lambd * lambd - x1 - x2) % p
+    y3 = (lambd * (x1 - x3) - y1) % p
+    return (x3, y3)
 
-def plus(G1, G2, p, step):
-    x1, y1 = G1
-    x2, y2 = G2
-    numerator = y2 - y1
-    denominator = x2 - x1
-    inv = reverse_n(denominator, p)
-    lamb = (numerator * inv) % p
-    new_x = (lamb ** 2 - x1 - x2) % p
-    new_y = (lamb * (x1 - new_x) - y1) % p
-    return [new_x, new_y]
+def multiply_point(k, P, a, p):
+    """Умножение точки P на число k"""
+    result = None
+    current = P
+    while k > 0:
+        if k % 2 == 1:
+            result = point_add(result, current, a, p)
+        current = point_double(current, a, p)
+        k = k // 2
+    return result
 
-def multiply(k, G, a, p):
-    Q = G
-    if k == 1:
-        return G
-    elif k == 2:
-        Q = double(G, a, p, 2)
-    else:
-        Q = double(G, a, p, 2)
-        for i in range(3, k+1):
-            Q = plus(Q, G, p, i)
-    return Q
-
-def enc(a, b, p, G, Cb, k, m):
-    Db = multiply(Cb, G, a, p)
-    R = multiply(k, G, a, p)
-    P = multiply(k, Db, a, p)
-    e = (m * P[0]) % p
+def encrypt(message, public_key, G, a, p, k):
+    """Шифрование сообщения"""
+    R = multiply_point(k, G, a, p)
+    P = multiply_point(k, public_key, a, p)
+    if P is None:
+        return (R, 0)
+    e = (message * P[0]) % p
     return (R, e)
 
-def dec(a, b, p, Cb, R, e):
-    Q = multiply(Cb, R, a, p)
-    inv = reverse_n(Q[0], p)
-    m_dec = (e * inv) % p
-    return m_dec
+def decrypt(ciphertext, private_key, a, p):
+    """Расшифрование сообщения"""
+    R, e = ciphertext
+    Q = multiply_point(private_key, R, a, p)
+    if Q is None:
+        return 0
+    x_Q_inv = mod_inverse(Q[0], p)
+    message = (e * x_Q_inv) % p
+    return message
+
+def find_order(G, a, p):
+    """Находит порядок точки G (наименьшее q, при котором q*G O)"""
+    point = G
+    q = 1
+    while point is not None:
+        point = point_add(point, G, a, p)
+        q += 1
+        if q > p * 2:
+            return None
+    return q
+
+def find_all_points(a, b, p):
+    """Находит все точки на эллиптической кривой"""
+    points = []
+    for x in range(p):
+        right = (x*x*x + a*x + b) % p
+        for y in range(p):
+            if (y*y) % p == right:
+                points.append((x, y))
+    return points
+
+#  ФУНКЦИИ ДЛЯ РАБОТЫ С ТЕКСТОМ 
+
+ALPHABET = {
+    'А': 1, 'Б': 2, 'В': 3, 'Г': 4, 'Д': 5, 'Е': 6, 'Ж': 7, 'З': 8,
+    'И': 9, 'К': 10, 'Л': 11, 'М': 12, 'Н': 13, 'О': 14, 'П': 15,
+    'Р': 16, 'С': 17, 'Т': 18, 'У': 19, 'Ф': 20, 'Х': 21, 'Ц': 22,
+    'Ч': 23, 'Ш': 24, 'Щ': 25, 'Ъ': 26, 'Ы': 27, 'Ь': 28, 'Э': 29,
+    'Ю': 30, 'Я': 31, ' ': 32, ',': 33, '.': 34, '!': 35, '?': 36
+}
+
+REVERSE_ALPHABET = {v: k for k, v in ALPHABET.items()}
+
+def text_to_numbers(text):
+    numbers = []
+    for char in text.upper():
+        if char in ALPHABET:
+            numbers.append(ALPHABET[char])
+    return numbers
+
+def numbers_to_text(numbers):
+    text = []
+    for num in numbers:
+        if num in REVERSE_ALPHABET:
+            text.append(REVERSE_ALPHABET[num])
+    return ''.join(text)
+
+#  ТЕСТЫ
 
 
-def encrypt_text_ecc(text, a, b, p, G, Cb, k):
-    """Текст → k-последовательность → шифрование каждого m; результат — одна строка для decrypt_text_ecc."""
-    k_seq = text_to_k_sequence(text, alphabet)
-    results = []
-    for m in k_seq:
-        R, e = enc(a, b, p, G, Cb, k, m)
-        results.append((R, e))
-    return ";".join(f"{R[0]},{R[1]},{e}" for R, e in results)
+def run_test(params, use_random=False):
+    print("\n ТЕСТИРОВАНИЕ ")
+    
+    a = params['a']
+    b = params['b'] % params['p']
+    p = params['p']
+    G = params['G']
+    
+    print(f"\nПараметры кривой:")
+    print(f"  y^2: x^3 + {a}x + {b} (mod {p})")
+    print(f"  Базовая точка G: {G}")
+    
+    x, y = G
+    left = (y*y) % p
+    right = (x*x*x + a*x + b) % p
+    if left != right:
+        print(f"\n  ВНИМАНИЕ: Точка G: {G} НЕ лежит на кривой!")
+        return
+    
+    print(f"\nВычисление порядка точки G")
+    q = find_order(G, a, p)
+    print(f"  Порядок точки G: q: {q}")
+    
+    if q is None or q < 3:
+        print(f"\n ВНИМАНИЕ: Точка G имеет малый порядок {q}, не подходит для криптографии!")
+        return
+    
+    if use_random:
+        private_key = random.randint(1, q - 1)
+        print(f"\n Рандомайзер сгенерировал Секретный ключ Cb: {private_key}")
+    else:
+        private_key = params['Cb']
+        print(f"\n Заданный секретный ключ Cb: {private_key}")
+    
+    public_key = multiply_point(private_key, G, a, p)
+    print(f"  Открытый ключ Db: {public_key}")
+    
+    message = params['message']
+    print(f"\n Сообщение: m: {message}")
+    if message >= p:
+        print(f" ВНИМАНИЕ: m ({message}) не меньше p ({p}). Искажение данных при расшифровке!")
+    
+    if use_random:
+        k = random.randint(1, q - 1)
+        print(f"\n Рандомайзер сгенерировал случайное число k: {k}")
+    else:
+        k = params['k']
+        print(f"\n Заданное число k: {k}")
+    
+    print(f"\n Шифрование")
+    ciphertext = encrypt(message, public_key, G, a, p, k)
+    print(f"  Шифртекст (R, e): {ciphertext}")
+    
+    print(f"\n Расшифрование")
+    decrypted = decrypt(ciphertext, private_key, a, p)
+    print(f"  Расшифрованное сообщение m': {decrypted}")
+
+def run_text_test(params, text, use_random=False):
+    print("\n ТЕСТИРОВАНИЕ НА ТЕКСТЕ ")
+
+    p = params['p']
+    if p < 36:
+         print(f"\n ВНИМАНИЕ: Размер алфавита 36 символов, а модуль p: {p} ")
+         print("Из за этого буквы с кодом >= 11 исказятся (x mod p)")
+         print("Для работы с текстом используйте простые числа p > 36\n")
+    
+    a = params['a']
+    b = params['b'] % params['p']
+    G = params['G']
+    q = find_order(G, a, p)
+    
+    if q is None or q < 3:
+        print(f" Точка G не подходит!")
+        return
+        
+    if use_random:
+        private_key = random.randint(1, q - 1)
+    else:
+        private_key = params['Cb']
+        
+    public_key = multiply_point(private_key, G, a, p)
+    numbers = text_to_numbers(text)
+    
+    print(f"Длина текста: {len(text)}. Преобразовано в {len(numbers)} чисел")
+    
+    ciphertexts = []
+    print(f" Шифрование текста")
+    for num in numbers:
+        k = random.randint(1, q - 1) if use_random else params['k']
+        ciphertexts.append(encrypt(num, public_key, G, a, p, k))
+        
+    decrypted_numbers = []
+    print(f" Расшифрование текста")
+    for ct in ciphertexts:
+        decrypted_numbers.append(decrypt(ct, private_key, a, p))
+        
+    decrypted_text = numbers_to_text(decrypted_numbers)
+    print(f"\n Расшифрованный текст: {decrypted_text[:50]}")
+
+def manual_input():
+    print("\n РУЧНОЙ ВВОД ПАРАМЕТРОВ ")
+    params = {}
+    print("\nВведите параметры эллиптической кривой:")
+    params['a'] = int(input("  a: "))
+    params['b'] = int(input("  b: "))
+    params['p'] = int(input("  p (простое число): "))
+    print("\nВведите базовую точку G:")
+    params['G'] = (int(input("  x: ")), int(input("  y: ")))
+    params['Cb'] = int(input("\nВведите секретный ключ Cb: "))
+    params['k'] = int(input("Введите случайное число k: "))
+    params['message'] = int(input("Введите сообщение m: "))
+    return params
 
 
-def decrypt_text_ecc(cipher_line, a, b, p, Cb):
-    """Строка шифртекста (блоки x,y,e через ;) → восстановленный текст."""
-    blocks = [x.strip() for x in cipher_line.split(";") if x.strip()]
-    m_dec_list = []
-    for block in blocks:
-        parts = block.split(",")
-        if len(parts) != 3:
-            raise ValueError(f"Неверный блок шифртекста: {block!r}")
-        R_dec = [int(parts[0]), int(parts[1])]
-        e_dec = int(parts[2])
-        m_dec = dec(a, b, p, Cb, R_dec, e_dec)
-        m_dec_list.append(m_dec)
-    return k_sequence_to_text(m_dec_list, alphabet)
 
+def random_mode():
+    print("\n РЕЖИМ СЛУЧАЙНЫХ ЧИСЕЛ (РАНДОМАЙЗЕР) ")
+    params = {}
+    print("\nВведите параметры эллиптической кривой:")
+    params['a'] = int(input("  a: "))
+    params['b'] = int(input("  b: "))
+    params['p'] = int(input("  p (простое число): "))
+    print("\nВведите базовую точку G:")
+    params['G'] = (int(input("  x: ")), int(input("  y: ")))
+    params['message'] = int(input("\nВведите сообщение m: "))
+    return params
+
+def manual_decrypt():
+    print("\n РУЧНОЙ ВВОД ДЛЯ РАСШИФРОВКИ ")
+    print("\nВведите параметры эллиптической кривой:")
+    a = int(input("  a: "))
+    p = int(input("  p (простое число): "))
+    
+    Cb = int(input("\nВведите секретный ключ Cb: "))
+    
+    print("\nВведите составные части шифртекста (R, e):")
+    Rx = int(input("  R (координата x): "))
+    Ry = int(input("  R (координата y): "))
+    e = int(input("  Значение e: "))
+    
+    ciphertext = ((Rx, Ry), e)
+    
+    print(f"\n Расшифрование")
+    decrypted = decrypt(ciphertext, Cb, a, p)
+    print(f"  Расшифрованное сообщение m': {decrypted}")
+
+def variant_12():
+    """Параметры из таблицы задания"""
+    return {
+        'a': 4,
+        'b': 3,
+        'p': 11,
+        'G': (0, 5),
+        'Cb': 6,
+        'k': 4,
+        'message': 4
+    }
 
 def main():
-    print("ECC: 1 — текст → k-последовательность, 2 — k-последовательность → текст, 3 — ECC-шифрование/расшифрование")
-    mode = input("Выберите режим (1/2/3): ").strip()
-    if mode == '1':
-        text = input("Введите текст для ECC-шифрования:\n")
-        k_seq = text_to_k_sequence(text, alphabet)
-        print("\nK-последовательность (индексы символов):")
-        print(k_seq)
-        with open("ecc_k_sequence.txt", "w", encoding="utf-8") as f:
-            f.write(" ".join(str(x) for x in k_seq))
-        print("K-последовательность сохранена в ecc_k_sequence.txt")
-    elif mode == '2':
-        seq_str = input("Введите k-последовательность (через пробел или запятую):\n")
-        seq = [int(x) for x in seq_str.replace(',', ' ').split()]
-        text = k_sequence_to_text(seq, alphabet)
-        print("\nВосстановленный текст:")
-        print(text)
-        with open("ecc_restored_text.txt", "w", encoding="utf-8") as f:
-            f.write(text)
-        print("Восстановленный текст сохранён в ecc_restored_text.txt")
-    elif mode == '3':
-        print("Эллиптическая кривая (ECC) — шифрование/расшифрование")
-        print("1. Шифрование")
-        print("2. Расшифрование")
-        submode = input("Выберите режим (1-2): ").strip()
-        a = int(input('Введите a: '))
-        b = int(input('Введите b: '))
-        p = int(input('Введите p (простое число): '))
-        G = input('Введите G в формате x,y: ').split(',')
-        G = [int(G[0]), int(G[1])]
-        if submode == '1':
-            Cb = int(input('Введите Cb (закрытый ключ получателя): '))
-            k = int(input('Введите k (секретный ключ для шифрования): '))
-            m_input = input('Введите m (сообщение для шифрования, через запятую): ')
-            m_list = [int(x.strip()) for x in m_input.split(',')]
-            results = []
-            for m in m_list:
-                R, e = enc(a, b, p, G, Cb, k, m)
-                results.append((R, e))
-            # Сохраняем результат в файл
-            with open("ecc_cipher.txt", "w", encoding="utf-8") as f:
-                for R, e in results:
-                    f.write(f"{R[0]},{R[1]},{e}\n")
-            print("Результаты шифрования (для каждого m):")
-            for R, e in results:
-                print(f"{R[0]},{R[1]},{e}")
-            print("\nГотовый шифртекст (одна строка, для расшифровки):")
-            ready_cipher = ";".join(f"{R[0]},{R[1]},{e}" for R, e in results)
-            print(ready_cipher)
-            print("\nШифртекст сохранён в ecc_cipher.txt")
-        elif submode == '2':
-            Cb = int(input('Введите Cb (закрытый ключ получателя): '))
-            print('Выберите источник шифртекста:')
-            print('1. Ввести вручную')
-            print('2. Прочитать из файла ecc_cipher.txt')
-            source = input('Ваш выбор (1/2): ').strip()
-            if source == '1':
-                cipher_input = input("Введите шифртекст (каждый блок в формате x,y,e через запятую):\n")
-            else:
-                with open("ecc_cipher.txt", "r", encoding="utf-8") as f:
-                    cipher_input = ";".join(line.strip() for line in f if line.strip())
-                print("Считан шифртекст из ecc_cipher.txt")
-            blocks = [x.strip() for x in cipher_input.split(';') if x.strip()]
-            m_dec_list = []
-            for block in blocks:
-                parts = block.split(',')
-                if len(parts) != 3:
-                    print(f"Ошибка в блоке: {block}")
-                    continue
-                R_dec = [int(parts[0]), int(parts[1])]
-                e_dec = int(parts[2])
-                m_dec = dec(a, b, p, Cb, R_dec, e_dec)
-                m_dec_list.append(m_dec)
-            print("Расшифрованная последовательность m:")
-            print(m_dec_list)
-            # Сохраняем результат в файл
-            with open("ecc_decoded_m.txt", "w", encoding="utf-8") as f:
-                f.write(" ".join(str(x) for x in m_dec_list))
-            print("Последовательность m сохранена в ecc_decoded_m.txt")
-            # Восстановить текст
-            text_restored = k_sequence_to_text(m_dec_list, alphabet)
-            print("Восстановленный текст:")
-            print(text_restored)
-            with open("ecc_restored_text.txt", "w", encoding="utf-8") as f:
-                f.write(text_restored)
-            print("Восстановленный текст сохранён в ecc_restored_text.txt")
-        else:
-            print("Неверный выбор режима.")
-    else:
-        print("Неверный выбор режима.")
+    while True:
+        print("\n ПРОГРАММА ECC ШИФРОВАНИЯ ")
+        print("1. Вариант табличный (тестовый)")
+        print("2. Ручной ввод параметров")
+        print("3. Расшифрование вручную (ввод шифртекста)")
+        print("0. Выход")
+        
+        choice = input("\nВаш выбор: ")
+        
+        if choice == '1':
+            run_test(variant_12(), use_random=False)
+        elif choice == '2':
+            run_test(manual_input(), use_random=False)
+        elif choice == '3':
+            manual_decrypt()
+        elif choice == '0':
+            print("Выход")
+            break
+            
+        again = input("Нажмите Enter для продолжения или введите 0 для выхода: ")
+        if again == '0':
+            break
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+""" ПРОГРАММА ECC ШИФРОВАНИЯ
+1. Вариант табличный (тестовый)
+2. Ручной ввод параметров
+3. Расшифрование вручную (ввод шифртекста)
+0. Выход
+
+Ваш выбор: 2
+
+ РУЧНОЙ ВВОД ПАРАМЕТРОВ
+
+Введите параметры эллиптической кривой:
+  a: 2
+  b: 6
+  p (простое число): 11
+
+Введите базовую точку G:
+  x: 10
+  y: 5
+
+Введите секретный ключ Cb: 5
+Введите случайное число k: 6
+Введите сообщение m: 6
+
+ ТЕСТИРОВАНИЕ
+
+Параметры кривой:
+  y^2: x^3 + 2x + 6 (mod 11)
+  Базовая точка G: (10, 5)
+
+Вычисление порядка точки G
+  Порядок точки G: q: 7
+
+ Заданный секретный ключ Cb: 5
+  Открытый ключ Db: (5, 8)
+
+ Сообщение: m: 6
+
+ Заданное число k: 6
+
+ Шифрование
+  Шифртекст (R, e): ((10, 6), 8)
+
+ Расшифрование
+  Расшифрованное сообщение m': 6
+Нажмите Enter для продолжения или введите 0 для выхода:
+
+ ПРОГРАММА ECC ШИФРОВАНИЯ
+1. Вариант табличный (тестовый)
+2. Ручной ввод параметров
+3. Расшифрование вручную (ввод шифртекста)
+0. Выход
+
+Ваш выбор: 3
+
+ РУЧНОЙ ВВОД ДЛЯ РАСШИФРОВКИ
+
+Введите параметры эллиптической кривой:
+  a: 2
+  p (простое число): 11
+
+Введите секретный ключ Cb: 5
+
+Введите составные части шифртекста (R, e):
+  R (координата x): 10
+  R (координата y): 6
+  Значение e: 8
+
+ Расшифрование
+  Расшифрованное сообщение m': 6
+Нажмите Enter для продолжения или введите 0 для выхода:"""
