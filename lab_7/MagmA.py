@@ -154,6 +154,8 @@ def main():
     print('3) Длинный открытый текст (ввод с консоли, ~1000+ символов и др.)')
     print('4) Проверка из файла sample_text.txt (как раньше)')
     opt = int(input())
+    print(f'\nИспользуемый ключ (256 бит, hex): {key}')
+    print(f'Длина ключа: {len(key)} hex-символов = {len(key)*4} бит\n')
     if opt == 1:
         text_h = bytearray(text, selected_codec).hex()
         text_h = "fedcba9876543210"

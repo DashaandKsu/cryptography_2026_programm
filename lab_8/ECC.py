@@ -271,6 +271,28 @@ def manual_decrypt():
     decrypted = decrypt(ciphertext, Cb, a, p)
     print(f"  Расшифрованное сообщение m': {decrypted}")
 
+def encrypt_text_ecc(text: str, a: int, b: int, p: int, G, cb: int, k: int) -> str:
+    """Шифрование текста ECC. Возвращает строку с парами (Rx,Ry,e) через пробел."""
+    G = tuple(G)
+    public_key = multiply_point(cb, G, a, p)
+    numbers = text_to_numbers(text)
+    parts = []
+    for num in numbers:
+        (Rx, Ry), e = encrypt(num, public_key, G, a, p, k)
+        parts.append(f"{Rx},{Ry},{e}")
+    return " ".join(parts)
+
+
+def decrypt_text_ecc(cipher: str, a: int, b: int, p: int, cb: int) -> str:
+    """Расшифрование текста ECC. Принимает строку формата encrypt_text_ecc."""
+    numbers = []
+    for part in cipher.strip().split():
+        Rx, Ry, e = (int(x) for x in part.split(","))
+        num = decrypt(((Rx, Ry), e), cb, a, p)
+        numbers.append(num)
+    return numbers_to_text(numbers)
+
+
 def variant_12():
     """Параметры из таблицы задания"""
     return {

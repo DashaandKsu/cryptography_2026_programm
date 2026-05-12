@@ -68,26 +68,21 @@ def encrypt_atbash(text, alphabet):
     encrypted = ""
     # Обрабатываю каждый символ исходного текста
     for symbol in text:
-        # Шифрую только буквы из заданного алфавита
-        if symbol in alphabet:
-            # Начальная позиция буквы в алфавите (найду в цикле)
-            position = 0
-            # Перебираю индексы алфавита, чтобы найти позицию symbol
-            for i in range(alphabet_length):
-                # Символ алфавита совпал с текущей буквой
-                if alphabet[i] == symbol:
-                    # Запоминаю индекс и выхожу из цикла
-                    position = i
-                    break
-            # Зеркальная позиция: с конца алфавита (а↔я, б↔ю и т.д.)
-            mirror_position = alphabet_length - 1 - position
-            # Беру букву из алфавита по зеркальной позиции
-            encrypted_symbol = alphabet[mirror_position]
-            # Добавляю зашифрованную букву к результату
-            encrypted = encrypted + encrypted_symbol
-        # Символ не из алфавита (уже подставленный код) оставляю как есть
-        else:
-            encrypted = encrypted + symbol
+        # Начальная позиция буквы в алфавите (найду в цикле)
+        position = 0
+        # Перебираю индексы алфавита, чтобы найти позицию symbol
+        for i in range(alphabet_length):
+            # Символ алфавита совпал с текущей буквой
+            if alphabet[i] == symbol:
+                # Запоминаю индекс и выхожу из цикла
+                position = i
+                break
+        # Зеркальная позиция: с конца алфавита (а↔я, б↔ю и т.д.)
+        mirror_position = alphabet_length - 1 - position
+        # Беру букву из алфавита по зеркальной позиции
+        encrypted_symbol = alphabet[mirror_position]
+        # Добавляю зашифрованную букву к результату
+        encrypted = encrypted + encrypted_symbol         
     # Возвращаю полностью зашифрованную строку
     return encrypted
 

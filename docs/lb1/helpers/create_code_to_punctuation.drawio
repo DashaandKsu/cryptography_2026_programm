@@ -1,0 +1,51 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="create_code_to_punctuation" id="create_code_to_punctuation">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="start" value="Начало&#xa;create_code_to_punctuation(punctuation_codes)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="220" y="30" width="410" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="init" value="Создание пустого словаря reverse_codes" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="120" width="370" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="loop_in" value="Цикл по знакам препинания&#xa;for znak in punctuation_codes" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="200" width="410" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="get_kod" value="Получение кода: kod = punctuation_codes[znak]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="290" width="370" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="set_rev" value="Запись обратной пары: reverse_codes[kod] = znak" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="360" width="370" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="loop_out" value="Цикл по знакам препинания" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;flipV=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="430" width="410" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ret" value="Возврат словаря reverse_codes" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="500" width="370" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fin" value="Конец" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="340" y="580" width="170" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="start" target="init" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="init" target="loop_in" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="loop_in" target="get_kod" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="get_kod" target="set_rev" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="set_rev" target="loop_out" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="loop_out" target="ret" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="ret" target="fin" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

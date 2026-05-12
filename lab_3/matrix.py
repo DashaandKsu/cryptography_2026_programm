@@ -1,30 +1,62 @@
 # Матричный шифр (шифр Хилла): шифрование блоками через умножение на ключевую матрицу по модулю алфавита.
 # Работа с текстом (подготовка, восстановление знаков) — только через lab_1.atbash.
 
+import os
 import random
+import sys
 from fractions import Fraction
+
+# Позволяет запускать этот файл напрямую (F5 из matrix.py): добавляет корень
+# проекта в sys.path, чтобы импорт из lab_1 работал и без запуска через main.py.
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
 
 from lab_1.atbash import (
     RUS_ALPHABET,
     create_punctuation_codes,
     create_code_to_punctuation,
-    prepare_text_for_encryption,
     split_into_groups_of_five,
     restore_punctuation_from_codes,
 )
 
 
+def _prepare_for_matrix(text: str, punctuation_codes) -> str:
+    """Подготовка текста для матричного шифра.
+
+    Знаки препинания (. , : ; ! ? -) всегда заменяются на буквенные коды,
+    потому что шифр работает только с буквами алфавита. Пробелы заменяются
+    на код «прбл» только если они реально были в исходном тексте — так для
+    слитного ввода («лучшеголубьвтарелкезптчемгусьнатокутчк») результат
+    совпадает с ручным шифрованием, а для обычного текста с пробелами
+    при расшифровке получится читаемая строка.
+    """
+    text = text.lower().replace("ё", "е")
+    text = text.replace("…", "...").replace("...", "тчктчктчк")
+    result = []
+    for symbol in text:
+        if symbol == " ":
+            result.append(punctuation_codes[" "])
+        elif symbol in punctuation_codes:
+            result.append(punctuation_codes[symbol])
+        else:
+            result.append(symbol)
+    return "".join(result)
+
+
 def _letter_to_index(letter: str) -> int:
-    return RUS_ALPHABET.index(letter.lower())
+    # Нумерация по методичке: А=1, Б=2, ..., Я=32 (алфавит из 32 букв).
+    return RUS_ALPHABET.index(letter.lower()) + 1
 
 
 def _index_to_letter(idx: int) -> str:
-    return RUS_ALPHABET[idx % 32]
+    # Обратное преобразование: 1 → а, 32 → я.
+    return RUS_ALPHABET[(idx - 1) % 32]
 
 
 def matrix_encrypt(text: str, key_matrix):
     punct_codes = create_punctuation_codes()
-    prepared = prepare_text_for_encryption(text, punct_codes)
+    prepared = _prepare_for_matrix(text, punct_codes)
     plain = [c for c in prepared if c in RUS_ALPHABET]
     original_len = len(plain)
     n = len(key_matrix)
@@ -174,3 +206,7 @@ def matrix_mode():
                 print("Ошибка:", e)
         else:
             print("Неверный ввод.")
+
+
+if __name__ == "__main__":
+    matrix_mode()

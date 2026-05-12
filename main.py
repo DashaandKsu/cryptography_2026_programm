@@ -36,7 +36,7 @@ from lab_7.MagmA import pkcs7_pad, pkcs7_unpad
 from lab_8.ECC import decrypt_text_ecc, encrypt_text_ecc
 from lab_8.ElGamal import decryption as elgamal_decrypt_raw, encrypt_elgamal, tchk_zpt_back
 from lab_8.RSA import des as rsa_decrypt_text, encrypt as rsa_encrypt_text
-from lab_8.ECC_codirovanie import main as ecc_codirovanie_main
+from lab_8.ECC import main as ecc_codirovanie_main
 from lab_9 import ElGamal_CP as elgamal_cp
 from lab_9 import RSA_CP as rsa_cp
 

@@ -70,7 +70,7 @@ def shenon(crypto_text, t_0, a, c, m, k=0):
 
     if k == 0:  # Шифрование
         for i in range(len(crypto_text_d)):
-            num = (alphabet.index(crypto_text_d[i]) + 1 + table_d[i]) % len(alphabet)
+            num = (alphabet.index(crypto_text_d[i]) + 1 + table_d[i + 1]) % len(alphabet)
             num = len(alphabet) if num == 0 else num
             crypto_text_encrypt += str(num).zfill(digits)
         group_size = 5 * digits
@@ -80,7 +80,7 @@ def shenon(crypto_text, t_0, a, c, m, k=0):
             return ["Ошибка: некорректная длина шифртекста"]
         decrypted = []
         for i in range(0, len(crypto_text_d), digits):
-            num = (int(crypto_text_d[i:i+digits]) - table_d[i//digits] - 1) % len(alphabet)
+            num = (int(crypto_text_d[i:i+digits]) - table_d[i//digits + 1] - 1) % len(alphabet)
             decrypted.append(alphabet[num])
         decrypted_text = ''.join(decrypted)
         # Восстанавливаем спецсимволы
@@ -100,6 +100,7 @@ def prime_factors(n):
 
 def check_conditions(a, c, m, t0):
     errors = []
+    warnings = []
 
     # Модуль не должен быть меньше размера алфавита
     if m < MODULUS:
@@ -119,11 +120,11 @@ def check_conditions(a, c, m, t0):
 
     # b = a – 1 кратно p для каждого простого p, делителя m
     if not all(b % p == 0 for p in factors):
-        errors.append(f"a - 1 ({b}) должно быть кратно каждому простому делителю модуля m")
+        warnings.append(f"a - 1 ({b}) должно быть кратно каждому простому делителю m — период гаммы не максимальный")
 
     # b кратно 4, если m кратно 4
     if m % 4 == 0 and b % 4 != 0:
-        errors.append(f"a - 1 ({b}) должно быть кратно 4, так как m ({m}) кратно 4")
+        warnings.append(f"a - 1 ({b}) должно быть кратно 4, так как m ({m}) кратно 4 — период гаммы не максимальный")
 
     # Дополнительные разумные ограничения
     if a <= 1:
@@ -133,7 +134,7 @@ def check_conditions(a, c, m, t0):
     if not (0 <= c < m):
         errors.append(f"c ({c}) должно быть в диапазоне [0, m)")
 
-    return len(errors) == 0, errors
+    return len(errors) == 0, errors, warnings
 
 def main():
     while True:
@@ -153,8 +154,12 @@ def main():
             a = int(input("a: "))
             c = int(input("c: "))
             
-            ok, errors = check_conditions(a, c, m, t0)
+            ok, errors, warnings = check_conditions(a, c, m, t0)
             if ok:
+                if warnings:
+                    print("\nПредупреждение (период гаммы не максимальный, но шифрование возможно):")
+                    for w in warnings:
+                        print(" -", w)
                 encrypted = shenon(text, t0, a, c, m)
                 print("\nРезультат шифрования:")
                 print(' '.join(encrypted))
@@ -162,7 +167,7 @@ def main():
                 print("Ошибка: не выполнены условия для генератора!")
                 for err in errors:
                     print(" -", err)
-        
+
         elif choice == '2':
             text = input("Введите зашифрованный текст (без пробелов): ").replace(' ', '')
             print(f"\nИспользуемый алфавит ({MODULUS} символов): {ALPHABET}")
@@ -171,8 +176,12 @@ def main():
             a = int(input("a: "))
             c = int(input("c: "))
             
-            ok, errors = check_conditions(a, c, m, t0)
+            ok, errors, warnings = check_conditions(a, c, m, t0)
             if ok:
+                if warnings:
+                    print("\nПредупреждение (период гаммы не максимальный, но расшифровка возможна):")
+                    for w in warnings:
+                        print(" -", w)
                 decrypted = shenon(text, t0, a, c, m, k=1)
                 print("\nРезультат расшифровки:")
                 print(''.join(decrypted))

@@ -1,0 +1,71 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="create_punctuation_codes" id="create_punctuation_codes">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="start" value="Начало&#xa;create_punctuation_codes()" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="30" width="290" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="init" value="Создание пустого словаря codes" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="120" width="310" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p1" value="codes[&quot;.&quot;] = &quot;тчк&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="195" width="310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p2" value="codes[&quot;,&quot;] = &quot;зпт&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="245" width="310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p3" value="codes[&quot;:&quot;] = &quot;двтч&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="295" width="310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p4" value="codes[&quot;;&quot;] = &quot;тчзп&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="345" width="310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p5" value="codes[&quot;!&quot;] = &quot;вскл&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="395" width="310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p6" value="codes[&quot;?&quot;] = &quot;впрс&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="445" width="310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p7" value="codes[&quot;-&quot;] = &quot;тир&quot;,&#xa;codes[&quot;–&quot;] = &quot;тир&quot;, codes[&quot;—&quot;] = &quot;тир&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="495" width="310" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p8" value="codes[&quot; &quot;] = &quot;прбл&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="565" width="310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ret" value="Возврат словаря codes" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="625" width="310" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fin" value="Конец" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="340" y="700" width="170" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="start" target="init" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="init" target="p1" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p1" target="p2" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p2" target="p3" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p3" target="p4" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p4" target="p5" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p5" target="p6" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p6" target="p7" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p7" target="p8" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="p8" target="ret" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;" edge="1" source="ret" target="fin" parent="1"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,446 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Atbash Encryption and Decryption" id="atbash_v2_corrected">
+    <mxGraphModel dx="4037" dy="1067" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="2600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;" value="Начало" vertex="1">
+          <mxGeometry height="46" width="170" x="1000" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_alpha" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Объявление алфавита РУС_АЛФАВИТ&#xa;(32 буквы русского алфавита без ё)" vertex="1">
+          <mxGeometry height="56" width="310" x="930" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="inp_action" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Ввод действия (шифрование/расшифрование)" vertex="1">
+          <mxGeometry height="50" width="310" x="930" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="inp_text" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Ввод исходного текста" vertex="1">
+          <mxGeometry height="50" width="310" x="930" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_action" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Действие: шифрование?" vertex="1">
+          <mxGeometry height="80" width="220" x="975" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_title" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;" value="ШИФРОВАНИЕ" vertex="1">
+          <mxGeometry height="40" width="250" x="350" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_prep" parent="1" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Подготовка текста к шифрованию&#xa;Нижний регистр, ё→е, троеточие,&#xa;замена знаков препинания на коды" vertex="1">
+          <mxGeometry height="64" width="360" x="295" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_empty" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Создание пустой строки результат" vertex="1">
+          <mxGeometry height="46" width="300" x="325" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_loop_in" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Цикл шифрования для каждого символа&#xa;из подготовленного текста" vertex="1">
+          <mxGeometry height="56" width="360" x="295" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Символ находится&#xa;в алфавите?" vertex="1">
+          <mxGeometry height="80" width="230" x="360" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_pos" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вычисление номера позиции символа&#xa;в алфавите" vertex="1">
+          <mxGeometry height="46" width="300" x="295" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_mirror" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вычисление зеркальной позиции&#xa;зеркальная_позиция = длина_алфавита − 1 − позиция" vertex="1">
+          <mxGeometry height="56" width="360" x="265" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_write" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Запись зеркальной буквы в результат" vertex="1">
+          <mxGeometry height="46" width="300" x="325" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_keep" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Запись символа в результат&#xa;без изменения" vertex="1">
+          <mxGeometry height="50" width="280" x="640" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_loop_out" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;flipV=1;" value="Цикл шифрования для каждого символа" vertex="1">
+          <mxGeometry height="46" width="360" x="295" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_group" parent="1" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Разбивка результата на группы по 5 символов&#xa;с пробелами между ними" vertex="1">
+          <mxGeometry height="56" width="360" x="295" y="1290" as="geometry" />
+        </mxCell>
+        <mxCell id="enc_upper" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Перевод результата в верхний регистр&#xa;для вывода" vertex="1">
+          <mxGeometry height="46" width="300" x="325" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_title" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;" value="РАСШИФРОВАНИЕ" vertex="1">
+          <mxGeometry height="40" width="250" x="1450" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_clean" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Удаление пробелов из текста&#xa;и перевод в нижний регистр" vertex="1">
+          <mxGeometry height="56" width="360" x="1400" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_empty" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Создание пустой строки результат" vertex="1">
+          <mxGeometry height="46" width="300" x="1430" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_loop_in" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Цикл расшифрования для каждого символа&#xa;из входного текста" vertex="1">
+          <mxGeometry height="56" width="360" x="1400" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Символ находится&#xa;в алфавите?" vertex="1">
+          <mxGeometry height="80" width="230" x="1465" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_pos" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вычисление номера позиции символа&#xa;в алфавите" vertex="1">
+          <mxGeometry height="46" width="300" x="1400" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_mirror" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вычисление зеркальной позиции&#xa;зеркальная_позиция = длина_алфавита − 1 − позиция" vertex="1">
+          <mxGeometry height="56" width="360" x="1370" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_write" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Запись зеркальной буквы в результат" vertex="1">
+          <mxGeometry height="46" width="300" x="1430" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_keep" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Запись символа в результат&#xa;без изменения" vertex="1">
+          <mxGeometry height="50" width="280" x="1100" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_loop_out" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;flipV=1;" value="Цикл расшифрования для каждого символа" vertex="1">
+          <mxGeometry height="46" width="360" x="1400" y="1210" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_restore" parent="1" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Восстановление знаков препинания из кодов&#xa;(тчк→., зпт→, тир→− и т.д.)" vertex="1">
+          <mxGeometry height="56" width="360" x="1400" y="1290" as="geometry" />
+        </mxCell>
+        <mxCell id="out" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вывод полученного результата" vertex="1">
+          <mxGeometry height="50" width="310" x="930" y="1420" as="geometry" />
+        </mxCell>
+        <mxCell id="fin" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;" value="Конец" vertex="1">
+          <mxGeometry height="46" width="170" x="1000" y="1510" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Начало" vertex="1">
+          <mxGeometry height="36" width="100" x="80" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_lower" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Перевод текста в нижний регистр" vertex="1">
+          <mxGeometry height="38" width="220" x="20" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_yo" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Замена ё → е" vertex="1">
+          <mxGeometry height="36" width="220" x="20" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_dots" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Замена троеточия на тчктчктчк" vertex="1">
+          <mxGeometry height="36" width="220" x="20" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_loop_in" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Цикл прохода по символам текста" vertex="1">
+          <mxGeometry height="46" width="220" x="20" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_dec" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Символ — знак&#xa;препинания?" vertex="1">
+          <mxGeometry height="74" width="180" x="40" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_yes" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Запись кода&#xa;в результат" vertex="1">
+          <mxGeometry height="56" width="120" x="-60" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_no" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Запись символа&#xa;в результат" vertex="1">
+          <mxGeometry height="56" width="120" x="210" y="890" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_loop_out" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;flipV=1;" value="Цикл прохода по символам текста" vertex="1">
+          <mxGeometry height="38" width="220" x="20" y="968" as="geometry" />
+        </mxCell>
+        <mxCell id="prep_fin" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Конец" vertex="1">
+          <mxGeometry height="36" width="100" x="80" y="1030" as="geometry" />
+        </mxCell>
+        <mxCell id="split_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Начало" vertex="1">
+          <mxGeometry height="36" width="100" x="80" y="1280" as="geometry" />
+        </mxCell>
+        <mxCell id="split_init" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Создание пустой строки&#xa;и счётчика = 0" vertex="1">
+          <mxGeometry height="46" width="220" x="20" y="1340" as="geometry" />
+        </mxCell>
+        <mxCell id="split_loop_in" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Цикл прохода по символам текста" vertex="1">
+          <mxGeometry height="46" width="220" x="20" y="1400" as="geometry" />
+        </mxCell>
+        <mxCell id="split_dec" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Счётчик &gt; 0&#xa;и счётчик mod 5 = 0?" vertex="1">
+          <mxGeometry height="74" width="180" x="40" y="1460" as="geometry" />
+        </mxCell>
+        <mxCell id="split_space" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Добавление пробела&#xa;в результат" vertex="1">
+          <mxGeometry height="56" width="110" y="1470" as="geometry" />
+        </mxCell>
+        <mxCell id="split_add" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Добавление символа в результат&#xa;и увеличение счётчика на 1" vertex="1">
+          <mxGeometry height="46" width="220" x="20" y="1560" as="geometry" />
+        </mxCell>
+        <mxCell id="split_loop_out" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;flipV=1;" value="Цикл прохода по символам текста" vertex="1">
+          <mxGeometry height="38" width="220" x="20" y="1620" as="geometry" />
+        </mxCell>
+        <mxCell id="split_fin" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Конец" vertex="1">
+          <mxGeometry height="36" width="100" x="80" y="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="codes_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Начало" vertex="1">
+          <mxGeometry height="36" width="100" x="2120" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="codes_build" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Построение словаря&#xa;знак препинания → код&#xa;(. → тчк, , → зпт и т.д.)" vertex="1">
+          <mxGeometry height="56" width="260" x="2040" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="codes_reverse_loop_in" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Цикл прохода по словарю&#xa;для каждого знака" vertex="1">
+          <mxGeometry height="46" width="260" x="2040" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="codes_reverse_body" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Запись обратной пары&#xa;обратный_словарь[код] = знак" vertex="1">
+          <mxGeometry height="46" width="260" x="2040" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="codes_reverse_loop_out" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;flipV=1;" value="Цикл прохода по словарю для каждого знака" vertex="1">
+          <mxGeometry height="38" width="260" x="2040" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="codes_fin" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Конец" vertex="1">
+          <mxGeometry height="36" width="100" x="2120" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Начало" vertex="1">
+          <mxGeometry height="36" width="100" x="2120" y="1280" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_init" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Создание пустой строки&#xa;и позиция = 0" vertex="1">
+          <mxGeometry height="46" width="260" x="2040" y="1340" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_loop_in" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Цикл пока позиция &lt; длина текста" vertex="1">
+          <mxGeometry height="46" width="260" x="2040" y="1400" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_inner_loop_in" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Цикл для каждого кода&#xa;из словаря кодов" vertex="1">
+          <mxGeometry height="46" width="260" x="2040" y="1460" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_match" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Кусок текста&#xa;равен коду?" vertex="1">
+          <mxGeometry height="74" width="200" x="2070" y="1520" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_yes" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Запись знака в результат&#xa;и сдвиг позиции&#xa;на длину кода" vertex="1">
+          <mxGeometry height="56" width="200" x="2320" y="1530" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_inner_loop_out" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;flipV=1;" value="Цикл для каждого кода из словаря кодов" vertex="1">
+          <mxGeometry height="38" width="260" x="2040" y="1620" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_found" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Код найден?" vertex="1">
+          <mxGeometry height="64" width="140" x="2100" y="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_no" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Запись символа в результат&#xa;и сдвиг позиции на 1" vertex="1">
+          <mxGeometry height="56" width="200" x="2310" y="1685" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_loop_out" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;flipV=1;" value="Цикл пока позиция &lt; длина текста" vertex="1">
+          <mxGeometry height="38" width="260" x="2040" y="1770" as="geometry" />
+        </mxCell>
+        <mxCell id="rst_fin" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Конец" vertex="1">
+          <mxGeometry height="36" width="100" x="2120" y="1830" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_alpha" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="proc_alpha">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_alpha_act" edge="1" parent="1" source="proc_alpha" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="inp_action">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_act_text" edge="1" parent="1" source="inp_action" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="inp_text">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_text_dec" edge="1" parent="1" source="inp_text" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_action">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dec_enc_yes" edge="1" parent="1" source="dec_action" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" target="enc_title" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_title_prep" edge="1" parent="1" source="enc_title" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_prep">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_prep_empty" edge="1" parent="1" source="enc_prep" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_empty">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_empty_loop" edge="1" parent="1" source="enc_empty" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_loop_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_loop_check" edge="1" parent="1" source="enc_loop_in" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_check_yes" edge="1" parent="1" source="enc_check" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_pos" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_check_no" edge="1" parent="1" source="enc_check" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="enc_keep" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pos_mirror" edge="1" parent="1" source="enc_pos" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_mirror">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_mirror_write" edge="1" parent="1" source="enc_mirror" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_write">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_write_loopout" edge="1" parent="1" source="enc_write" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_loop_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_keep_loopout" edge="1" parent="1" source="enc_keep" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_loop_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="1233" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_loopout_group" edge="1" parent="1" source="enc_loop_out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_group_upper" edge="1" parent="1" source="enc_group" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="enc_upper">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_upper_out" edge="1" parent="1" source="enc_upper" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dec_enc_no" edge="1" parent="1" source="dec_action" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" target="dec_title" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dtitle_clean" edge="1" parent="1" source="dec_title" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_clean">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_clean_empty" edge="1" parent="1" source="dec_clean" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_empty">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dempty_loop" edge="1" parent="1" source="dec_empty" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_loop_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dloop_check" edge="1" parent="1" source="dec_loop_in" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dcheck_yes" edge="1" parent="1" source="dec_check" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_pos" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dcheck_no" edge="1" parent="1" source="dec_check" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="dec_keep" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dpos_mirror" edge="1" parent="1" source="dec_pos" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_mirror">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dmirror_write" edge="1" parent="1" source="dec_mirror" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_write">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dwrite_loopout" edge="1" parent="1" source="dec_write" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_loop_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dkeep_loopout" edge="1" parent="1" source="dec_keep" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_loop_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1240" y="1233" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dloopout_restore" edge="1" parent="1" source="dec_loop_out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="dec_restore">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_restore_out" edge="1" parent="1" source="dec_restore" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_out_fin" edge="1" parent="1" source="out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="fin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="br_prep" edge="1" parent="1" source="enc_prep" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="prep_start">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep1" edge="1" parent="1" source="prep_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_lower">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep2" edge="1" parent="1" source="prep_lower" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_yo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep3" edge="1" parent="1" source="prep_yo" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_dots">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep4" edge="1" parent="1" source="prep_dots" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_loop_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep5" edge="1" parent="1" source="prep_loop_in" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_dec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_yes" edge="1" parent="1" source="prep_dec" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="prep_yes" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_no" edge="1" parent="1" source="prep_dec" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="prep_no" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_yes_out" edge="1" parent="1" source="prep_yes" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_loop_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="60" y="949" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ep_no_out" edge="1" parent="1" source="prep_no" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_loop_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="949" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ep_lout_fin" edge="1" parent="1" source="prep_loop_out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="prep_fin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="br_split" edge="1" parent="1" source="enc_group" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="split_start">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es1" edge="1" parent="1" source="split_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="split_init">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es2" edge="1" parent="1" source="split_init" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="split_loop_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es3" edge="1" parent="1" source="split_loop_in" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="split_dec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es_yes" edge="1" parent="1" source="split_dec" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="split_space" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es_space_add" edge="1" parent="1" source="split_space" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="split_add">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="55" y="1573" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="es_no" edge="1" parent="1" source="split_dec" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="split_add" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es_add_out" edge="1" parent="1" source="split_add" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="split_loop_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es_out_fin" edge="1" parent="1" source="split_loop_out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="split_fin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="br_codes" edge="1" parent="1" source="dec_clean" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="codes_start">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec1" edge="1" parent="1" source="codes_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="codes_build">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2" edge="1" parent="1" source="codes_build" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="codes_reverse_loop_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec3" edge="1" parent="1" source="codes_reverse_loop_in" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="codes_reverse_body">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec4" edge="1" parent="1" source="codes_reverse_body" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="codes_reverse_loop_out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ec5" edge="1" parent="1" source="codes_reverse_loop_out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="codes_fin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="br_rst" edge="1" parent="1" source="dec_restore" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=classic;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="rst_start">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er1" edge="1" parent="1" source="rst_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_init">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er2" edge="1" parent="1" source="rst_init" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_loop_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er3" edge="1" parent="1" source="rst_loop_in" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_inner_loop_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er4" edge="1" parent="1" source="rst_inner_loop_in" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_match">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er_yes" edge="1" parent="1" source="rst_match" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="rst_yes" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er_no" edge="1" parent="1" source="rst_match" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_inner_loop_out" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er_yes_out" edge="1" parent="1" source="rst_yes" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_inner_loop_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2420" y="1639" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="er_iout_found" edge="1" parent="1" source="rst_inner_loop_out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_found">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er_found_no" edge="1" parent="1" source="rst_found" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="rst_no" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er_found_yes" edge="1" parent="1" source="rst_found" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_loop_out" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="er_no_out" edge="1" parent="1" source="rst_no" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_loop_out">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2410" y="1789" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="er_lout_fin" edge="1" parent="1" source="rst_loop_out" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rst_fin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
