@@ -1,7 +1,12 @@
 from typing import List
 import math
 from pprint import pprint
-from typing import List
+from lab_1.atbash import (
+    create_punctuation_codes,
+    create_code_to_punctuation,
+    prepare_text_for_encryption,
+    restore_punctuation_from_codes,
+)
 
 """Функция получения индексов символа"""
 def all_indexes(key: str, ch: str) -> List[int]:
@@ -71,7 +76,9 @@ def decrypt(encypted_message: str, key: str) -> str:
         for row in range(len(matrix) - offset):
             matrix[row][x] = encypted_message.pop(0)
         idx += 1
-    return ''.join([''.join(x) for x in matrix]).replace('прб', ' ').replace('зпт', ',').replace('тчк', '.')
+    result = ''.join([''.join(x) for x in matrix])
+    code_to_punct = create_code_to_punctuation(create_punctuation_codes())
+    return restore_punctuation_from_codes(result, code_to_punct)
 """Преобразует зашифрованные символы обратно в матрицу
 Учитывает длину строки при заполнении последних столбцов
 Объединяет символы построчно
@@ -81,7 +88,8 @@ def decrypt(encypted_message: str, key: str) -> str:
 def vertical():
     choice = int(input("Зашифровать - 1 или расшифровать - 2 "))
     key = input("Введите ключ: ")
-    message = input("Введите сообщение: ").replace(" ", "прб").replace(",", "зпт").replace(".", 'тчк').replace(':', '').replace(';', '').replace('!', '').replace('?', '').lower()
+    punct_codes = create_punctuation_codes()
+    message = prepare_text_for_encryption(input("Введите сообщение: "), punct_codes)
     if choice == 1:
         print(f"Зашифрованное сообщение {encrypt(message, key)}")
     else:

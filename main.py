@@ -2,7 +2,7 @@
 # Импорты из lab_1 … lab_9 и единый терминальный сценарий (как при запуске исходных файлов).
 
 # Импортируем функции шифрования и расшифрования Атбаш, Цезаря, Полибия, Тритемия, Белазо, Виженера, матричного шифра и Плэйфера
-from lab_1.atbash import encrypt_text as atbash_encrypt, decrypt_text as atbash_decrypt
+from lab_1.atbash import encrypt_text as atbash_encrypt, decrypt_text as atbash_decrypt, create_punctuation_codes, prepare_text_for_encryption
 from lab_1.Cesar import encrypt_text as cesar_encrypt, decrypt_text as cesar_decrypt
 from lab_1.Polibia import encrypt_text as polybius_encrypt, decrypt_text as polybius_decrypt
 from lab_2.Tritemi import encrypt_tritemius as tritemi_encrypt, decrypt_tritemius as tritemi_decrypt
@@ -177,7 +177,7 @@ def run_cipher(cipher_id, action, text):
         if not key:
             raise ValueError("Ключ не может быть пустым")
         if action == 1:
-            prepared = text.replace(" ", "прб").replace(",", "зпт").replace(".", "тчк").replace(":", "").replace(";", "").replace("!", "").replace("?", "").lower()
+            prepared = prepare_text_for_encryption(text, create_punctuation_codes())
             return vertical_encrypt(prepared, key)
         else:
             return vertical_decrypt(text, key)

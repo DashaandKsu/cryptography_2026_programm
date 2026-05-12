@@ -25,9 +25,15 @@ def prepare_text_for_enc(text):
     text = text.replace(',', 'зпт') # все запятые меняем на зпт
     text = text.replace('.', 'тчк') # все точки меняем на тчк
     text = text.replace(':', 'двтч') # все двоеточия меняем на двтч
+    text = text.replace('–', 'длинтре') # en dash → длинтре (до замены дефиса!)
     text = text.replace('-', 'тиретире') # все тире меняем на тиретире
     text = text.replace(';', 'запчк')
     text = text.replace('—', 'длинтре')
+    text = text.replace('…', 'мнтчк')
+    text = text.replace('!', 'вскл')
+    text = text.replace('?', 'впрс')
+    text = text.replace('(', 'скбо')
+    text = text.replace(')', 'скбз')
     text = text.replace('«', 'кавычкаодин')
     text = text.replace('»', 'кавычкадва')
     text = text.replace('ё', 'е')
@@ -40,10 +46,16 @@ def end_text_of_decr(text):
     text = text.replace('тчк', '.')
     text = text.replace('двтч', ':')
     text = text.replace('тиретире', '-')
-    text = text.replace('длинтре', '—')
+    text = text.replace('длинтре', '–')
+    text = text.replace('мнтчк', '…')
     text = text.replace('запчк', ';')
     text = text.replace('кавычкаодин', '«')
     text = text.replace('кавычкадва', '»')
+    text = text.replace('мнтчк', '…')
+    text = text.replace('вскл', '!')
+    text = text.replace('впрс', '?')
+    text = text.replace('скбо', '(')
+    text = text.replace('скбз', ')')
     return text
 
 Sbox = (

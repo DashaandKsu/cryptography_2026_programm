@@ -105,20 +105,63 @@ def encrypt(message: str, keys: List[str]) -> str:
 Возвращает зашифрованное сообщение"""
 
 
+def text_to_hex_blocks(text: str) -> List[str]:
+    """Переводит текст в список hex-блоков по 8 байт (16 hex-символов)"""
+    # дополняем текст пробелами до кратности 8 байтам
+    while len(text.encode('utf-8')) % 8 != 0:
+        text += ' '
+    raw = text.encode('utf-8')
+    blocks = []
+    for i in range(0, len(raw), 8):
+        block = raw[i:i+8]
+        blocks.append(block.hex().zfill(16))
+    return blocks
+
+
+def hex_blocks_to_text(blocks: List[str]) -> str:
+    """Переводит список hex-блоков обратно в текст"""
+    result = b''
+    for block in blocks:
+        result += bytes.fromhex(block.zfill(16))
+    return result.decode('utf-8').rstrip(' ')
+
+
+def encrypt_text(text: str, keys: List[str]) -> List[str]:
+    """Шифрует текст блоками по 8 байт"""
+    blocks = text_to_hex_blocks(text)
+    return [encrypt(block, keys) for block in blocks]
+
+
+def decrypt_text(hex_blocks: List[str], keys: List[str]) -> str:
+    """Расшифровывает список hex-блоков в текст"""
+    keys_reversed = list(reversed(keys))
+    decrypted_blocks = [encrypt(block, keys_reversed) for block in hex_blocks]
+    return hex_blocks_to_text(decrypted_blocks)
+
+
 def network():
     choice = int(input("Зашифровать - 1 или расшифровать - 2 "))
-    message = input("Введите сообщение: ")
-    key = input("Введите ключ: ")
-    check_params(message, key)
+    key = input("Введите ключ (64 шестнадцатеричных символа): ").strip()
+
+    # проверяем ключ отдельно
+    try:
+        int(key, 16)
+        assert len(key) == 64
+    except Exception:
+        raise KeyError("Неправильные входные параметры: ключ должен быть 64 hex-символами")
+
     keys = split_key(key)
+
     if choice == 1:
-        encrypt_message = encrypt(message, keys)
-        print(f'encrypt {encrypt_message}')
-    #При расшифровке порядок явно меняется на обратный вызовом keys.reverse():
+        message = input("Введите текст для шифрования: ")
+        encrypted_blocks = encrypt_text(message, keys)
+        encrypted_hex = ' '.join(encrypted_blocks)
+        print(f'Зашифровано (hex-блоки): {encrypted_hex}')
     else:
-        keys.reverse()
-        decrypt_message = encrypt(message, keys)
-        print(f'decrypt {decrypt_message}')
+        raw = input("Введите зашифрованные hex-блоки через пробел: ")
+        hex_blocks = raw.strip().split()
+        decrypted = decrypt_text(hex_blocks, keys)
+        print(f'Расшифровано: {decrypted}')
 
 if __name__ == '__main__':
     network()
@@ -126,3 +169,4 @@ if __name__ == '__main__':
     # print(t("2a196f34"))
     # print(t("ebd9f03a"))
     # print(t("b039bb3d"))
+    # ffeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
