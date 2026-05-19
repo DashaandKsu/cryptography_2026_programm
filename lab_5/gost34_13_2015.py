@@ -74,14 +74,10 @@ def pad_hex_block(block: str, block_size: int = 16) -> str:
     return block.ljust(block_size, '0')
 
 def gamma_magma(mode="enc"):
-    # Поблочный ввод сообщения: один раз вводим ключ и IV, затем множество блоков P_i / C_i.
-    print("Сообщение вводится поблочно (каждый блок — 16 hex-символов).")
-
     key = input("Введите ключ (64 hex-символа): ").strip()
-    IV = input("Введите инициализирующий вектор/синхропосылку (8 или 16 hex-символов): ").strip()
-    IV = IV.ljust(16, "0")  # Делаем IV 16-символьным
+    IV = input("Введите инициализирующий вектор/синхропосылку (16 hex-символов): ").strip()
 
-    # Проверка ключа и IV
+    # Проверка ключа
     try:
         int(key, 16)
     except Exception:
@@ -91,61 +87,62 @@ def gamma_magma(mode="enc"):
         print("Ключ должен содержать 64 hex-символа!")
         return
 
+    # Проверка IV
     try:
         int(IV, 16)
     except Exception:
         print("IV должен состоять из hex-символов!")
         return
     if len(IV) != 16:
-        print("IV должен содержать 16 hex-символов!")
+        print("IV должен содержать ровно 16 hex-символов!")
         return
+
+    if mode == "enc":
+        text = input("Введите текст для шифрования: ")
+        # Переводим текст в hex
+        hex_text = text.encode('utf-8').hex()
+        # Запоминаем длину оригинала в байтах для правильной обрезки при расшифровании
+        original_len = len(text.encode('utf-8'))
+        # Дополняем до кратности 8 байт (16 hex-символов)
+        if len(hex_text) % 16 != 0:
+            hex_text = hex_text.ljust((len(hex_text) // 16 + 1) * 16, '0')
+    else:
+        hex_text = input("Введите зашифрованный текст (hex): ").strip()
+        original_len_input = input("Введите длину оригинального текста в байтах: ").strip()
+        try:
+            original_len = int(original_len_input)
+        except Exception:
+            print("Длина должна быть числом!")
+            return
+        try:
+            int(hex_text, 16)
+        except Exception:
+            print("Зашифрованный текст должен состоять из hex-символов!")
+            return
 
     keys = split_key(key)
     total = ""
     current_iv = IV
-    idx = 1
 
-    while True:
-        prompt = "Введите блок P{} (16 hex-символов, пусто — конец ввода): ".format(idx) if mode == "enc" else \
-                 "Введите блок C{} (16 hex-символов, пусто — конец ввода): ".format(idx)
-        block = input(prompt).strip()
-        if block == "":
-            break
-
-        try:
-            int(block, 16)
-        except Exception:
-            print("Блок должен состоять только из hex-символов (0-9, a-f).")
-            continue
-        if len(block) != 16:
-            print("Блок должен содержать ровно 16 hex-символов!")
-            continue
-
+    # Разбиваем на блоки по 16 hex-символов и обрабатываем
+    for i in range(0, len(hex_text), 16):
+        block = hex_text[i:i+16]
         ek = encrypt_block(current_iv, keys)
         out_block = hex(int(ek, 16) ^ int(block, 16))[2:].zfill(16)
-
-        if mode == "enc":
-            print(f"C{idx}: {out_block}")
-        else:
-            print(f"P{idx}: {out_block}")
-
         total += out_block
-
-        # Увеличиваем IV
         current_iv = hex((int(current_iv, 16) + 1) % (1 << 64))[2:].zfill(16)
-        idx += 1
-
-    if not total:
-        print("Блоки не были введены.")
-        return
 
     print("\nРезультат (hex):")
     print(total)
-    if mode == "dec":
-        # Обрезаем возможные лишние нули (если последний блок был дополнен при шифровании)
-        trimmed = total.rstrip("0")
+
+    if mode == "enc":
+        print(f"\nДлина оригинального текста в байтах: {original_len}")
+        print("(Сохраните это число — оно понадобится при расшифровании)")
+    else:
+        # Берём ровно столько байт, сколько было в оригинале
+        result_bytes = bytes.fromhex(total)[:original_len]
         print("\nРасшифрованный текст:")
-        print(from_hex(trimmed))
+        print(result_bytes.decode('utf-8'))
 
 def main():
     print("Выберите режим работы:")

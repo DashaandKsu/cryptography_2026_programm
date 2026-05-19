@@ -22,7 +22,7 @@ from lab_3.playfer import (
 from lab_4.vertical import encrypt as vertical_encrypt, decrypt as vertical_decrypt
 from lab_4.feistel import encrypt as feistel_encrypt, split_key, check_params
 from lab_4.cardano import encrypt_text as cardano_encrypt, decrypt_text as cardano_decrypt, run_cardano_gui
-from lab_5.shenon import shenon, check_conditions
+from lab_5.shenon import shenon, check_conditions, ALPHABET as SHENON_ALPHABET, MODULUS as SHENON_MODULUS
 from lab_5.gost34_13_2015 import gamma_magma
 from lab_6 import utils as lab6_utils
 from lab_6.A5 import encrypt_decrypt as a5_encrypt_decrypt
@@ -34,8 +34,20 @@ from lab_7.MagmA import magma_decrypt as gost_magma_decrypt_block
 from lab_7.MagmA import magma_encrypt as gost_magma_encrypt_block
 from lab_7.MagmA import pkcs7_pad, pkcs7_unpad
 from lab_8.ECC import decrypt_text_ecc, encrypt_text_ecc
-from lab_8.ElGamal import decryption as elgamal_decrypt_raw, encrypt_elgamal, tchk_zpt_back
-from lab_8.RSA import des as rsa_decrypt_text, encrypt as rsa_encrypt_text
+from lab_8.ElGamal import (
+    decryption as elgamal_decrypt_raw,
+    encrypt_elgamal,
+    tchk_zpt_back,
+    is_prime as elgamal_is_prime,
+)
+from lab_8.RSA import (
+    des as rsa_decrypt_text,
+    encrypt as rsa_encrypt_text,
+    get_prime_input as rsa_get_prime_input,
+    get_e_input as rsa_get_e_input,
+    phi as rsa_phi,
+    modinv as rsa_modinv,
+)
 from lab_8.ECC import main as ecc_codirovanie_main
 from lab_9 import ElGamal_CP as elgamal_cp
 from lab_9 import RSA_CP as rsa_cp
@@ -251,12 +263,18 @@ def run_cipher(cipher_id, action, text):
         gamma_magma(mode)
         return None
     if cipher_id == 18:
+        print(f"\nИспользуемый алфавит ({SHENON_MODULUS} символов): {SHENON_ALPHABET}")
+        m = int(input(f"Введите модуль m (>= размер алфавита, т.е. >= {SHENON_MODULUS}): ").strip())
         t0 = int(input("T0: ").strip())
         a = int(input("a: ").strip())
         c = int(input("c: ").strip())
-        m = int(input("m: ").strip())
-        if not check_conditions(a, c, m, t0):
-            raise ValueError("не выполнены условия для генератора!")
+        ok, errors, warnings = check_conditions(a, c, m, t0)
+        if not ok:
+            raise ValueError("не выполнены условия для генератора!\n" + "\n".join(f" - {e}" for e in errors))
+        if warnings:
+            print("\nПредупреждение (период гаммы не максимальный, но шифрование возможно):")
+            for w in warnings:
+                print(" -", w)
         if action == 1:
             encrypted = shenon(text, t0, a, c, m)
             return ' '.join(encrypted)
@@ -301,11 +319,15 @@ def run_cipher(cipher_id, action, text):
         return out
     if cipher_id == 22:
         if action == 1:
-            p = int(input("Введите p (простое число > 32): ").strip())
-            g = int(input("Введите g (основание): ").strip())
-            x = int(input("Введите секретный ключ x: ").strip())
+            while True:
+                p = int(input("Введите p (простое >32): ").strip())
+                if elgamal_is_prime(p) and p > 32:
+                    break
+                print("Некорректное p!")
+            x = int(input(f"Введите секретный ключ x (1<{p-1}): ").strip())
+            g = int(input(f"Введите g (1<{p-1}): ").strip())
             cipher, p_, g_, y = encrypt_elgamal(text, p, g, x)
-            print(f"Открытый ключ: p={p_}, g={g_}, y={y}")
+            print(f"\nОткрытые ключи: p={p_}, g={g_}, y={y}")
             return cipher
         p = int(input("Введите модуль p: ").strip())
         x = int(input("Введите секретный ключ x: ").strip())
@@ -326,11 +348,48 @@ def run_cipher(cipher_id, action, text):
         return decrypt_text_ecc(text, a, b, p_mod, cb)
     if cipher_id == 24:
         if action == 1:
-            n = int(input("Введите модуль n: ").strip())
-            e = int(input("Введите открытую экспоненту e: ").strip())
+            print("\n=== РЕЖИМ ШИФРОВАНИЯ ===")
+            while True:
+                p = rsa_get_prime_input("Введите первое простое число p (минимум 3): ", 3)
+                q = rsa_get_prime_input("Введите второе простое число q (минимум 3): ", 3)
+                if p == q:
+                    print("p и q должны быть разными!")
+                    continue
+                n = p * q
+                if n < 33:
+                    print(f"n = {n} должен быть ≥33!")
+                    continue
+                break
+            phi_n = rsa_phi(p, q)
+            print(f"\nφ(n) = {phi_n}")
+            e = rsa_get_e_input(phi_n)
+            d = rsa_modinv(e, phi_n)
+            if e == d:
+                raise ValueError("Открытый (e) и секретный (d) ключи совпадают — выберите другие параметры.")
+            print(f"\n=== КЛЮЧИ ===")
+            print(f"Открытый ключ (n, e): ({n}, {e})")
+            print(f"Секретный ключ (n, d): ({n}, {d})")
             return rsa_encrypt_text(text, n, e)
-        n = int(input("Введите модуль n: ").strip())
-        d = int(input("Введите секретную экспоненту d: ").strip())
+        print("\n=== РЕЖИМ РАСШИФРОВАНИЯ ===")
+        print("\nВыберите способ ввода:")
+        print("1. Через секретный ключ (n, d)")
+        print("2. Через параметры p, q и e")
+        dec_choice = input("Ваш выбор (1-2): ").strip()
+        if dec_choice == '1':
+            n = int(input("Введите модуль n: ").strip())
+            d = int(input("Введите секретный ключ d: ").strip())
+        elif dec_choice == '2':
+            p = rsa_get_prime_input("Введите простое число p: ")
+            q = rsa_get_prime_input("Введите простое число q: ")
+            e = int(input("Введите экспоненту e: ").strip())
+            n = p * q
+            phi_n = rsa_phi(p, q)
+            d = rsa_modinv(e, phi_n)
+        else:
+            raise ValueError("Неверный выбор способа ввода.")
+        print(f"\n=== ИСПОЛЬЗУЕМЫЕ КЛЮЧИ ===")
+        print(f"Модуль n: {n}")
+        print(f"Секретный ключ d: {d}")
         return rsa_decrypt_text(text, n, d)
 
     if cipher_id == 25:
