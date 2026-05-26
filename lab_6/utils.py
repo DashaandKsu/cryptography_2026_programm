@@ -3,6 +3,50 @@
 ALPHABET = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
 # 32 буквы, индекс от 0 до 31, кодируется 5 битами
 
+# Маркеры для пробела и знаков препинания.
+# Используем сочетания с Ъ/Ь в начале — они не встречаются в начале русских слов,
+# поэтому не будут случайно найдены в расшифрованном тексте.
+_PREPROCESS_MAP = {
+    ' ':  'ЪПР',
+    '.':  'ЪТЧ',
+    ',':  'ЪЗП',
+    '!':  'ЪВС',
+    '?':  'ЪВП',
+    '-':  'ЪДФ',
+    '—':  'ЪЪДФ',
+    ':':  'ЪДВ',
+    ';':  'ЪТЗ',
+    '(':  'ЪСКБ',
+    ')':  'ЪСКЗ',
+    '«':  'ЪЕЛЛ',
+    '»':  'ЪЕЛП',
+    '"':  'ЪКВ',
+    '\n': 'ЪНС',
+}
+_POSTPROCESS_MAP = {v: k for k, v in _PREPROCESS_MAP.items()}
+
+
+def preprocess_text(text: str) -> str:
+    """Заменяет пробелы и знаки препинания буквенными маркерами перед шифрованием."""
+    text = text.upper().replace('Ё', 'Е')
+    result = []
+    for ch in text:
+        if ch in _PREPROCESS_MAP:
+            result.append(_PREPROCESS_MAP[ch])
+        elif ch in ALPHABET:
+            result.append(ch)
+        # остальные символы пропускаются
+    return ''.join(result)
+
+
+def postprocess_text(text: str) -> str:
+    """Восстанавливает пробелы и знаки препинания из буквенных маркеров после расшифрования."""
+    # Ищем маркеры от длинных к коротким, чтобы не перепутать ТЧЗПТ и ТЧК
+    result = text
+    for marker in sorted(_POSTPROCESS_MAP.keys(), key=len, reverse=True):
+        result = result.replace(marker, _POSTPROCESS_MAP[marker])
+    return result.lower()
+
 
 def text_to_bits(text: str) -> list[int]:
     """

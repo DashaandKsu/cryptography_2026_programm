@@ -141,20 +141,32 @@ class A5_2:
         return keystream
 
 
-def encrypt_decrypt(text: str, key_text: str, frame_number: int) -> str:
+def encrypt_decrypt(text: str, key_text: str, frame_number: int, mode: str = "encrypt") -> str:
     """
     Шифрование/расшифрование текста с A5/2.
+    mode — 'encrypt' или 'decrypt'.
     key_text — текст ключа по ALPHABET → 64 бита; frame_number — кадр 0..2^22-1 (десятичное).
     """
     key_bits = utils.key_text_to_bits(key_text, 64)
     frame_bits = utils.frame_decimal_to_bits(frame_number, 22)
-    text_bits = utils.text_to_bits(text)
+
+    if mode == "encrypt":
+        prepared = utils.preprocess_text(text)
+    else:
+        prepared = text.upper()
+
+    text_bits = utils.text_to_bits(prepared)
 
     a5 = A5_2(key_bits, frame_bits)
     keystream = a5.generate_keystream(len(text_bits))
 
     cipher_bits = [text_bits[i] ^ keystream[i] for i in range(len(text_bits))]
-    return utils.bits_to_text(cipher_bits)
+    result = utils.bits_to_text(cipher_bits)
+
+    if mode == "decrypt":
+        result = utils.postprocess_text(result)
+
+    return result
 
 
 def main():
@@ -187,7 +199,8 @@ def main():
         print("Ошибка:", e)
         return
 
-    result = encrypt_decrypt(text, key, frame_num)
+    mode = "encrypt" if choice == "1" else "decrypt"
+    result = encrypt_decrypt(text, key, frame_num, mode)
     if choice == "1":
         print("Зашифрованный текст:", result)
     else:

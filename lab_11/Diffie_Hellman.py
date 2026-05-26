@@ -45,24 +45,24 @@ def is_prime(n, k=10):
             return False
     return True
 
-def generate_prime(bits):
-    """Генерация простого числа заданной битовой длины"""
-    while True:
-        candidate = random.getrandbits(bits)
-        if candidate % 2 == 0:
-            candidate += 1
-        if is_prime(candidate):
-            return candidate
+# def generate_prime(bits):
+#     """Генерация простого числа заданной битовой длины"""
+#     while True:
+#         candidate = random.getrandbits(bits)
+#         if candidate % 2 == 0:
+#             candidate += 1
+#         if is_prime(candidate):
+#             return candidate
 
 def generate_random(max_val):
     """Генерация случайного числа в диапазоне [2, max_val-1]"""
     return random.randint(2, max_val - 1)
 
-def gcd(a, b):
-    """Наибольший общий делитель (не используется, но оставлена для совместимости)"""
-    while b:
-        a, b = b, a % b
-    return a
+# def gcd(a, b):
+#     """Наибольший общий делитель (не используется, но оставлена для совместимости)"""
+#     while b:
+#         a, b = b, a % b
+#     return a
 
 # ---------- Основная логика протокола ----------
 def diffie_hellman():

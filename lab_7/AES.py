@@ -318,25 +318,25 @@ def AES_encryption(text, key, flag_hex="Да"):
     """
     if len(key) != 32:  # Проверка длины ключа (128 бит в hex-представлении)
         return "Неверный размер ключа (ключ должен быть 128 бит)!"
-    
-    # if not (text[0] in "0123456789abcdef"):  # Если текст не в hex-формате
-    #     text = prepare_text_for_enc(text)  # Подготовка текста
-    #     text = translate_in_hex(text)  # Перевод в hex
-    
+
+    # Если текст не в hex-формате — подготовить и перевести
+    if not all(c in "0123456789abcdefABCDEF" for c in text):
+        text = prepare_text_for_enc(text)  # Замена знаков препинания на коды
+        text = translate_to_hex(text)      # Перевод в hex через алфавит
+
+    # Дополнение до кратности 32 символам (128 бит) пробелами (0x20 → индекс 32)
+    remainder = len(text) % 32
+    if remainder != 0:
+        text += "20" * ((32 - remainder) // 2)  # 20 — hex-код пробела в алфавите
+
     key = int(key, 16)  # Преобразование hex-ключа в число
     AES1 = AES(key)  # Создание объекта AES с ключом
     encrypted = ""  # Результирующая строка
-    
+
     # Шифрование по блокам по 32 hex-символа (128 бит)
     for i in range(0, len(text), 32):
-        text_ = int(text[i:(i+32)], 16)  # Текущий блок текста
-        # Шифртекст блока — ровно 32 шестнадцатеричные цифры (нижний регистр)
-        encrypted += format(AES1.encrypt(text_), "032x")
-
-    # Обработка последнего неполного блока
-    lack = len(encrypted) % 32
-    if lack != 0:
-        text_ = int(text[(-1)*lack - 1:], 16)  # Последний неполный блок
+        block = text[i:i+32].ljust(32, '0')  # Дополнить нулями если блок неполный
+        text_ = int(block, 16)
         encrypted += format(AES1.encrypt(text_), "032x")
 
     if flag_hex == "Да":  # Если нужен hex-результат
@@ -357,24 +357,15 @@ def AES_decryption(text, key, flag_hex="Да"):
     """
     if len(key) != 32:  # Проверка длины ключа (128 бит в hex-представлении)
         return "Неверный размер ключа (ключ должен быть 128 бит)!"
-    
-    # if not (text[0] in "0123456789abcdef"):  # Если текст не в hex-формате
-    #     text = prepare_text_for_enc(text)  # Подготовка текста
-    #     text = translate_in_hex(text)  # Перевод в hex
-    
+
     key = int(key, 16)  # Преобразование hex-ключа в число
     AES1 = AES(key)  # Создание объекта AES с ключом
     decrypted = ""  # Результирующая строка
-    
+
     # Расшифрование по блокам по 32 hex-символа (128 бит)
     for i in range(0, len(text), 32):
-        text_ = int(text[i:(i + 32)], 16)  # Текущий блок текста
-        decrypted += format(AES1.decrypt(text_), "032x")
-
-    # Обработка последнего неполного блока
-    lack = len(decrypted) % 32
-    if lack != 0:
-        text_ = int(text[(-1) * lack - 1:], 16)  # Последний неполный блок
+        block = text[i:i+32].ljust(32, '0')
+        text_ = int(block, 16)
         decrypted += format(AES1.decrypt(text_), "032x")
 
     if flag_hex == "Да":  # Если нужен hex-результат

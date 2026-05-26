@@ -196,7 +196,7 @@ def test_with_table():
 
     # Кадр → 22 бита
     frame_bits = utils.frame_decimal_to_bits(frame_num, 22)
-
+ы
     # Открытый текст → биты
     text_bits = utils.text_to_bits(plain_text)
 

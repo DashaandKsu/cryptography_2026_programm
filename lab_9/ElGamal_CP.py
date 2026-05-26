@@ -1,16 +1,4 @@
 # -*- coding: utf8 -*-
-"""
-Цифровая подпись в стиле Эль-Гамаля (учебный вариант над Z_p^*).
-
-Идея защиты:
-- P — простое, G — основание (1 < G < P), X — секретный ключ, Y = G^X mod P — открытый.
-- Одноразовый K (взаимно прост с P−1) генерируется случайно; a = G^K mod P; m = H(M).
-- Второй компонент b находят из сравнения m ≡ X·a + K·b (mod P−1) (перебор в коде).
-- Проверка: Y^a · a^b ≡ G^m (mod P) — при корректной подписи совпадает с G^m.
-
-Что знать преподавателю: роль G, X, Y, K; почему K нельзя повторять; связь проверки
-с дискретным логарифмом; что хеш учебный (модуль P), не SHA.
-"""
 import math
 import secrets
 
@@ -36,18 +24,31 @@ def tchk_zpt(n):
     n = n.replace('.', 'тчк')
     n = n.replace(',', 'зпт')
     n = n.replace(' ', 'прб')
+    n = n.replace('–', 'тре')   # длинное тире
+    n = n.replace('—', 'тре')   # em-тире
+    n = n.replace('-', 'тре')   # обычный дефис
+    n = n.replace('!', 'вскл')
+    n = n.replace('?', 'впр')
+    n = n.replace('(', 'скб')
+    n = n.replace(')', 'скб')
+    n = n.replace(':', 'двт')
+    n = n.replace(';', 'тчзпт')
+    n = n.replace('«', 'квч')
+    n = n.replace('»', 'квч')
+    n = n.replace('"', 'квч')
+    n = n.replace('…', 'тчктчктчк')  # многоточие (один символ Unicode)
+    n = n.replace('\n', 'прб')
     n = n.lower()
     n = n.replace('ё', 'е')
     n = n.replace('й', 'и')
     return n
 
 def textToNumbers(text):
-    """Номера M_i по таблице 1 (методичка)."""
+    """Номера M_i по таблице 1 (методичка). Символы не из таблицы пропускаются."""
     res = []
     for ch in text:
-        if ch not in HASH_LETTER:
-            raise ValueError(f"Символ '{ch}' отсутствует в таблице кодирования.")
-        res.append(HASH_LETTER[ch])
+        if ch in HASH_LETTER:
+            res.append(HASH_LETTER[ch])
     return res
 
 def hesh(text, module):

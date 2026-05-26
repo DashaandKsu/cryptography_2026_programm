@@ -1,83 +1,105 @@
 from typing import List
 
 table = [
-    [1, 7, 14, 13, 0, 5, 8, 3, 4, 15, 10, 6, 9, 12, 11, 2],
-    [8, 14, 2, 5, 6, 9, 1, 12, 15, 4, 11, 0, 13, 10, 3, 7],
-    [5, 13, 15, 6, 9, 2, 12, 10, 11, 7, 8, 1, 4, 3, 14, 0],
-    [7, 15, 5, 10, 8, 1, 6, 13, 0, 9, 3, 14, 11, 4, 2, 12],
-    [12, 8, 2, 1, 13, 4, 15, 6, 7, 0, 10, 5, 3, 14, 9, 11],
-    [11, 3, 5, 8, 2, 15, 10, 13, 14, 1, 7, 4, 12, 9, 6, 0],
-    [6, 8, 2, 3, 9, 10, 5, 12, 1, 14, 4, 7, 11, 13, 0, 15],
-    [12, 4, 6, 2, 10, 5, 11, 9, 14, 8, 13, 7, 0, 3, 15, 1]
+    [0xc, 0x4, 0x6, 0x2, 0xa, 0x5, 0xb, 0x9, 0xe, 0x8, 0xd, 0x7, 0x0, 0x3, 0xf, 0x1],
+    [0x6, 0x8, 0x2, 0x3, 0x9, 0xa, 0x5, 0xc, 0x1, 0xe, 0x4, 0x7, 0xb, 0xd, 0x0, 0xf],
+    [0xb, 0x3, 0x5, 0x8, 0x2, 0xf, 0xa, 0xd, 0xe, 0x1, 0x7, 0x4, 0xc, 0x9, 0x6, 0x0],
+    [0xc, 0x8, 0x2, 0x1, 0xd, 0x4, 0xf, 0x6, 0x7, 0x0, 0xa, 0x5, 0x3, 0xe, 0x9, 0xb],
+    [0x7, 0xf, 0x5, 0xa, 0x8, 0x1, 0x6, 0xd, 0x0, 0x9, 0x3, 0xe, 0xb, 0x4, 0x2, 0xc],
+    [0x5, 0xd, 0xf, 0x6, 0x9, 0x2, 0xc, 0xa, 0xb, 0x7, 0x8, 0x1, 0x4, 0x3, 0xe, 0x0],
+    [0x8, 0xe, 0x2, 0x5, 0x6, 0x9, 0x1, 0xc, 0xf, 0x4, 0xb, 0x0, 0xd, 0xa, 0x3, 0x7],
+    [0x1, 0x7, 0xe, 0xd, 0x0, 0x5, 0x8, 0x3, 0x4, 0xf, 0xa, 0x6, 0x9, 0xc, 0xb, 0x2],
 ]
 
-def split_key(key: str) -> List[str]:
-    # Делим ключ на 8-символьные блоки (4 блока по 8 символов, повторяем 3 раза + обратный порядок)
-    blocks = [key[i:i+8] for i in range(0, len(key), 8)]
-    return blocks * 3 + blocks[::-1]
+# Тестовые векторы ГОСТ Р 34.13-2015 (приложение А)
+P_TEST = ["92def06b3c130a59", "db54c704f8189d20", "4a98fb2e67a8024c", "8912409b17b57e41"]
+C_TEST = ["4e98110c97b7b93c", "3e250d93d6e85d69", "136d868807b2dbef", "568eb680ab52a12d"]
+KEY_TEST = "ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
+IV_TEST = "12345678"
 
-# Нелинейное преобразование 32‑битного слова по таблице S‑блоков
-def t(a: str) -> str:
-    # S-box подстановка (a - hex строка длиной 8)
-    return ''.join([hex(table[index][int(i, 16)])[2:] for index, i in enumerate(a)])
 
-# Циклический сдвиг влево на shift бит (по модулю 2^32)
-def cyclic_shift_left(value: int, shift: int, bits=32):
-    return ((value << shift % bits) & ((1 << bits) - 1) | (value >> (bits - shift % bits))) & ((1 << bits) - 1)
+def split_by(text: str, size: int) -> List[str]:
+    return [text[i:i+size] for i in range(0, len(text), size)]
 
-# Функция g из раундового преобразования (сложение по модулю 2^32 + S‑блоки + сдвиг)
-def g(key: str, a: str) -> str:
-    # key и a - hex строки длиной 8
-    s = (int(key, 16) + int(a, 16)) % 2 ** 32
-    s_hex = hex(s)[2:].zfill(8)
-    t_s = t(s_hex)
-    shifted = cyclic_shift_left(int(t_s, 16), 11)
-    return hex(shifted)[2:].zfill(8)
 
-# Одна раундовая функция для пары 32‑битных слов (a1, a0)
-def G(a1, a0, key) -> str:
-    # a1, a0, key - hex строки длиной 8
-    return hex(int(g(key, a0), 16) ^ int(a1, 16))[2:].zfill(8)
+def block_checker(block_list: List[str], size: int):
+    for i in range(len(block_list)):
+        if len(block_list[i]) != size:
+            block_list[i] = block_list[i].zfill(size)
 
-class KeyError(Exception):
-    pass
 
-def check_params(input: str, key: str):
-    try:
-        int(input, 16)
-        assert len(input) == 16
-        assert len(key) == 64
-    except Exception:
-        raise KeyError("Неправильные входные параметры")
+def t(int32: int) -> int:
+    # Нелинейное преобразование: итерация по тетрадам в обратном порядке (от старших к младшим)
+    y = 0
+    for i in reversed(range(8)):
+        j = (int32 >> (4 * i)) & 0xf
+        y <<= 4
+        y ^= table[i][j]
+    return y
 
-def encrypt_block(message: str, keys: List[str]) -> str:
-    a1, a0 = message[0:8], message[8:]
-    for key in keys:
-        a1, a0 = a0, G(a1, a0, key)
-    return a0 + a1
 
-def to_hex(input: str) -> str:
-    try:
-        int(input, 16)
-        return input
-    except Exception:
-        return input.encode('utf-8').hex()
+def F(iv_vec: List[str], m_key: List[str]):
+    """Раундовая функция сети Фейстеля. iv_vec — список из двух 32-битных бинарных строк."""
+    N1, N2 = "", ""
+    for i in m_key:
+        N1 = iv_vec[0]
+        N2 = iv_vec[1]
+        # Сложение по модулю 2^32 + S-блоки + циклический сдвиг влево на 11
+        S1 = hex((int(N2, 2) + int(i, 2)) % (2 ** 32))[2:].zfill(8)
+        S1 = hex(t(int(S1, 16)))
+        S1 = bin(int(S1, 16))[2:].zfill(32)
+        S1 = S1[11:] + S1[:11]
+        S2 = bin(int(N1, 2) ^ int(S1, 2))[2:].zfill(32)
+        N1 = bin(int(N2, 2))[2:].zfill(32)
+        iv_vec[0] = N1
+        N2 = S2
+        iv_vec[1] = S2
+    return N2, N1
 
-def from_hex(hex_str: str) -> str:
-    try:
-        return bytes.fromhex(hex_str).decode('utf-8')
-    except Exception:
-        return hex_str
 
-def pad_hex_block(block: str, block_size: int = 16) -> str:
-    # Дополнение блока нулями справа до block_size
-    return block.ljust(block_size, '0')
+def encode(open_text_hex: str, iv_hex8: str, key: str) -> str:
+    """Гаммирование CTR. Принимает hex открытого текста, 8-символьный IV и 64-символьный ключ.
+    Возвращает hex-строку без префикса 0x."""
+    # Переводим блоки открытого текста в бинарный вид
+    blocks_hex = split_by(open_text_hex, 16)
+    open_bin = "".join([bin(int(b, 16))[2:].zfill(64) for b in blocks_hex])
+    open_blocks = split_by(open_bin, 64)
 
-def gamma_magma(mode="enc"):
-    key = input("Введите ключ (64 hex-символа): ").strip()
-    IV = input("Введите инициализирующий вектор/синхропосылку (16 hex-символов): ").strip()
+    # Строим расписание ключей: 32 подключа в бинарном виде
+    key_parts = split_by(key, 8)
+    key_schedule = []
+    for _ in range(3):
+        key_schedule.extend(key_parts)
+    key_schedule.extend(key_parts[::-1])
+    key_bin_str = "".join(key_schedule)
+    key_bin = bin(int(key_bin_str, 16))[2:].zfill(256)
+    sub_keys = split_by(key_bin, 32)
 
-    # Проверка ключа
+    # IV: 8 hex → 32 бит, дополняем нулями справа до 64 бит
+    iv_bin = bin(int(iv_hex8, 16))[2:].zfill(32)
+    iv_bin = iv_bin + "0" * (64 - len(iv_bin))
+
+    result_bin = ""
+    for block in open_blocks:
+        iv_vec = split_by(iv_bin, 32)
+        saved_iv = "".join(iv_vec)
+
+        N1, N2 = F(iv_vec, sub_keys)
+        gamma = N1 + N2
+
+        for j in range(len(block)):
+            result_bin += str(int(block[j]) ^ int(gamma[j]))
+
+        # Увеличиваем счётчик на 1
+        iv_bin = bin(int(saved_iv, 2) + 1)[2:].zfill(64)
+
+    return hex(int(result_bin, 2))[2:].zfill(len(open_text_hex))
+
+
+def gamma_magma():
+    key = input()
+    IV = input()
+
     try:
         int(key, 16)
     except Exception:
@@ -87,74 +109,58 @@ def gamma_magma(mode="enc"):
         print("Ключ должен содержать 64 hex-символа!")
         return
 
-    # Проверка IV
     try:
         int(IV, 16)
     except Exception:
         print("IV должен состоять из hex-символов!")
         return
-    if len(IV) != 16:
-        print("IV должен содержать ровно 16 hex-символов!")
+    if len(IV) != 8:
+        print("IV должен содержать ровно 8 hex-символов!")
         return
 
-    if mode == "enc":
-        text = input("Введите текст для шифрования: ")
-        # Переводим текст в hex
-        hex_text = text.encode('utf-8').hex()
-        # Запоминаем длину оригинала в байтах для правильной обрезки при расшифровании
-        original_len = len(text.encode('utf-8'))
-        # Дополняем до кратности 8 байт (16 hex-символов)
-        if len(hex_text) % 16 != 0:
-            hex_text = hex_text.ljust((len(hex_text) // 16 + 1) * 16, '0')
-    else:
-        hex_text = input("Введите зашифрованный текст (hex): ").strip()
-        original_len_input = input("Введите длину оригинального текста в байтах: ").strip()
+    opt = input("Выберите действие:\n1) ГОСТ\n2) Зашифровать текст\n3) Расшифровать текст\n")
+
+    if opt == "1":
+        open_hex = "".join(P_TEST)
+        encrypted = encode(open_hex, IV, key)
+        print("Шифртекст:", encrypted, encrypted == "".join(C_TEST))
+        decrypted = encode(encrypted, IV, key)
+        print("Расшифрование:", decrypted, decrypted == open_hex)
+
+    elif opt == "2":
+        text = input("Введите текст: ")
+        text_h = bytearray(text, "utf-8").hex()
+        block_list = split_by(text_h, 32)
+        # Последний блок дополняем нулями справа (чтобы обрезка при расшифровании работала корректно)
+        for i in range(len(block_list)):
+            if len(block_list[i]) != 32:
+                block_list[i] = block_list[i].ljust(32, '0')
+        enc_blocks = [encode(block, IV, key) for block in block_list]
+        print("Зашифрованный текст:", "".join(enc_blocks))
+
+    elif opt == "3":
+        text_h = input("Введите текст: ")
+        block_list = split_by(text_h, 32)
+        block_checker(block_list, 32)
+        dec_blocks = [encode(block, IV, key) for block in block_list]
+        dec = "".join(dec_blocks)
+        # Обрезаем дополняющие нули справа (до кратности 2 для валидного hex)
+        dec_stripped = dec.rstrip('0')
+        if len(dec_stripped) % 2 != 0:
+            dec_stripped += '0'
+        print("Расшифрованный hex:", dec)
         try:
-            original_len = int(original_len_input)
+            print("Открытый текст:", bytearray.fromhex(dec_stripped).decode("utf-8"))
         except Exception:
-            print("Длина должна быть числом!")
-            return
-        try:
-            int(hex_text, 16)
-        except Exception:
-            print("Зашифрованный текст должен состоять из hex-символов!")
-            return
+            print("Открытый текст:", dec)
 
-    keys = split_key(key)
-    total = ""
-    current_iv = IV
-
-    # Разбиваем на блоки по 16 hex-символов и обрабатываем
-    for i in range(0, len(hex_text), 16):
-        block = hex_text[i:i+16]
-        ek = encrypt_block(current_iv, keys)
-        out_block = hex(int(ek, 16) ^ int(block, 16))[2:].zfill(16)
-        total += out_block
-        current_iv = hex((int(current_iv, 16) + 1) % (1 << 64))[2:].zfill(16)
-
-    print("\nРезультат (hex):")
-    print(total)
-
-    if mode == "enc":
-        print(f"\nДлина оригинального текста в байтах: {original_len}")
-        print("(Сохраните это число — оно понадобится при расшифровании)")
-    else:
-        # Берём ровно столько байт, сколько было в оригинале
-        result_bytes = bytes.fromhex(total)[:original_len]
-        print("\nРасшифрованный текст:")
-        print(result_bytes.decode('utf-8'))
-
-def main():
-    print("Выберите режим работы:")
-    print("1. Шифрование")
-    print("2. Расшифрование")
-    choice = input("Ваш выбор (1/2): ").strip()
-    if choice == "1":
-        gamma_magma("enc")
-    elif choice == "2":
-        gamma_magma("dec")
     else:
         print("Неверный выбор!")
+
+
+def main():
+    gamma_magma()
+
 
 if __name__ == "__main__":
     main()

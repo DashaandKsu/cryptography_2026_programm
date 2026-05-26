@@ -211,9 +211,10 @@ def load_variant_1():
 
 # ---------- Основная программа ----------
 def main():
-    print("ГОСТ Р 34.10-2012 (ЭЦП на эллиптических кривых) Вариант 1")
+    print("ГОСТ Р 34.10-2012 (ЭЦП на эллиптических кривых)")
     print("1 - Подписать сообщение (параметры из варианта 1)")
-    print("2 - Проверить подпись (параметры из варианта 1)")
+    print("2 - Подписать сообщение (ручной ввод параметров)")
+    print("3 - Проверить подпись (параметры из варианта 1)")
     choice = input("Ваш выбор: ").strip()
 
     if choice == '1':
@@ -229,7 +230,6 @@ def main():
         print(f"Модуль хеша = {hash_mod}")
         print(f"Сообщение: '{message}'")
 
-        # Проверяем параметры
         ok, msg = validate_curve_params(p, a, b, q, G)
         if not ok:
             print(f"Ошибка в параметрах: {msg}")
@@ -239,7 +239,6 @@ def main():
             print(f"Ошибка ключей: {msg}")
             return
 
-        # Подпись
         res, err = sign_message(message, p, a, b, q, G, d, k, hash_mod)
         if err:
             print(f"Ошибка подписи: {err}")
@@ -247,14 +246,11 @@ def main():
             r, s, Q = res
             print(f"\nОткрытый ключ Q = {Q}")
             print(f"Подпись: r = {r}, s = {s}")
-            # Проверка
             ok, msg = verify_signature(message, r, s, p, a, b, q, G, Q, hash_mod)
             print(f"Проверка: {msg}")
-        return
 
     elif choice == '2':
         message = input("Введите сообщение: ")
-        # Ручной ввод с проверками
         while True:
             try:
                 p = int(input("p (простое > 3) = "))
@@ -291,31 +287,38 @@ def main():
             print(f"Подпись: r = {r}, s = {s}")
             print("Для проверки используйте эти значения и исходное сообщение.")
 
-    elif choice == '2':
-        p, a, b, q, G, d, k, hash_mod = load_variant_1()
+    elif choice == '3':
         message = input("Введите сообщение: ")
+        while True:
+            try:
+                p = int(input("p (простое > 3) = "))
+                a = int(input("a = "))
+                b = int(input("b = "))
+                q = int(input("q (простое, порядок подгруппы) = "))
+                xg = int(input("G.x = "))
+                yg = int(input("G.y = "))
+                G = ECPoint(xg, yg)
 
-        print("\nПараметры кривой (вариант 1):")
-        print(f"p = {p}, a = {a}, b = {b}")
-        print(f"q = {q}")
-        print(f"G = {G}")
-        print(f"Модуль хеша = {hash_mod}")
-        print(f"Сообщение: '{message}'")
+                ok, msg = validate_curve_params(p, a, b, q, G)
+                if not ok:
+                    print(f"Ошибка: {msg}")
+                    continue
 
-        xq = int(input("\nВведите Q.x: "))
-        yq = int(input("Введите Q.y: "))
-        Q = ECPoint(xq, yq)
-        r = int(input("Введите r: "))
-        s = int(input("Введите s: "))
+                hash_mod = int(input("Модуль хеширования (обычно = p): "))
 
-        # Проверки
-        ok, msg = validate_curve_params(p, a, b, q, G)
-        if not ok:
-            print(f"Ошибка параметров кривой: {msg}")
-            return
-        if not is_on_curve(Q, p, a, b):
-            print("Ошибка: точка Q не лежит на кривой")
-            return
+                xq = int(input("Q.x = "))
+                yq = int(input("Q.y = "))
+                Q = ECPoint(xq, yq)
+
+                if not is_on_curve(Q, p, a, b):
+                    print("Ошибка: точка Q не лежит на кривой")
+                    continue
+
+                r = int(input("r = "))
+                s = int(input("s = "))
+                break
+            except ValueError:
+                print("Ошибка ввода числа.")
 
         ok, msg = verify_signature(message, r, s, p, a, b, q, G, Q, hash_mod)
         print(f"\nРезультат проверки: {msg}")
