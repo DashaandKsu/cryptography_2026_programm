@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="ECC шифрование и расшифрование" id="ecc_main_v1">
-    <mxGraphModel dx="6770" dy="6915" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3400" pageHeight="3800" math="0" shadow="0">
+    <mxGraphModel dx="4831" dy="2123" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3400" pageHeight="3800" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -25,8 +25,15 @@
         <mxCell id="rh_on_curve" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="y² mod p = (x³ + ax + b) mod p?&#xa;(точка G лежит на кривой)" vertex="1">
           <mxGeometry height="110" width="280" x="1560" y="548" as="geometry" />
         </mxCell>
-        <mxCell id="WZcql3p2c3XSBmHeB4WP-4" edge="1" parent="1" source="err_not_on_curve" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WZcql3p2c3XSBmHeB4WP-3" value="">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-3" edge="1" parent="1" source="err_not_on_curve" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="fin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2520" y="603" />
+              <mxPoint x="2520" y="2110" />
+              <mxPoint x="1710" y="2110" />
+            </Array>
+            <mxPoint x="2520" y="2210" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="err_not_on_curve" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вывод: точка G не лежит на кривой.&#xa;Завершение" vertex="1">
           <mxGeometry height="50" width="280" x="1980" y="578" as="geometry" />
@@ -37,8 +44,14 @@
         <mxCell id="rh_q_small" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="q отсутствует или q &lt; 3?" vertex="1">
           <mxGeometry height="100" width="240" x="1580" y="788" as="geometry" />
         </mxCell>
-        <mxCell id="WZcql3p2c3XSBmHeB4WP-6" edge="1" parent="1" source="err_small_q" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="WZcql3p2c3XSBmHeB4WP-5" value="">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-2" edge="1" parent="1" source="err_small_q" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="fin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2480" y="838" />
+              <mxPoint x="2480" y="2110" />
+              <mxPoint x="1710" y="2110" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="err_small_q" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вывод: малый порядок,&#xa;не подходит для криптографии. Завершение" vertex="1">
           <mxGeometry height="50" width="320" x="1960" y="813" as="geometry" />
@@ -83,31 +96,35 @@
           <mxGeometry height="100" width="240" x="1590" y="1858" as="geometry" />
         </mxCell>
         <mxCell id="dec_in_R_e" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Ввод шифртекста: точки R(x, y) и значения e" vertex="1">
-          <mxGeometry height="56" width="340" x="1940" y="1653" as="geometry" />
+          <mxGeometry height="56" width="340" x="1890" y="1585" as="geometry" />
         </mxCell>
         <mxCell id="dec_Q" parent="1" style="shape=process;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вычисление точки Q = Cb · R&#xa;(умножение точки на число)" vertex="1">
-          <mxGeometry height="60" width="320" x="1950" y="1733" as="geometry" />
+          <mxGeometry height="60" width="320" x="1900" y="1665" as="geometry" />
         </mxCell>
         <mxCell id="rh_Q_none" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Q — бесконечно&#xa;удалённая точка?" vertex="1">
-          <mxGeometry height="100" width="220" x="2000" y="1813" as="geometry" />
+          <mxGeometry height="100" width="220" x="1950" y="1745" as="geometry" />
         </mxCell>
         <mxCell id="dec_m_zero" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Присваивание m&#39; = 0" vertex="1">
-          <mxGeometry height="46" width="200" x="2260" y="1838" as="geometry" />
+          <mxGeometry height="46" width="200" x="2210" y="1770" as="geometry" />
         </mxCell>
         <mxCell id="dec_inv" parent="1" style="shape=process;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вычисление обратного элемента:&#xa;x_Q_inv = (Q.x)⁻¹ mod p" vertex="1">
-          <mxGeometry height="60" width="320" x="1950" y="1953" as="geometry" />
+          <mxGeometry height="60" width="320" x="1900" y="1885" as="geometry" />
         </mxCell>
         <mxCell id="dec_m" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вычисление m&#39; = (e · x_Q_inv) mod p" vertex="1">
-          <mxGeometry height="50" width="320" x="1950" y="2033" as="geometry" />
+          <mxGeometry height="50" width="320" x="1900" y="1965" as="geometry" />
         </mxCell>
-        <mxCell id="WZcql3p2c3XSBmHeB4WP-8" edge="1" parent="1" source="out_m" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;curved=0;dashed=1;" target="fin">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-1" edge="1" parent="1" source="out_m" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=0;" target="fin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1710" y="2060" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="out_m" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вывод расшифрованного сообщения m&#39;" vertex="1">
-          <mxGeometry height="50" width="320" x="1950" y="2113" as="geometry" />
+          <mxGeometry height="50" width="320" x="1900" y="2045" as="geometry" />
         </mxCell>
         <mxCell id="fin" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="46" width="160" x="1630" y="2115" as="geometry" />
+          <mxGeometry height="46" width="160" x="1630" y="2150" as="geometry" />
         </mxCell>
         <mxCell id="e_start_menu" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="menu_in">
           <mxGeometry relative="1" as="geometry" />
@@ -157,10 +174,11 @@
         <mxCell id="e_mp_yes" edge="1" parent="1" source="rh_m_p" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="warn_m" value="Да">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_warn_outkeys" edge="1" parent="1" source="warn_m" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="out_keys">
+        <mxCell id="e_warn_outkeys" edge="1" parent="1" source="warn_m" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="out_keys">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="2120" y="1183" />
+              <mxPoint x="2120" y="1130" />
+              <mxPoint x="1700" y="1130" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -191,30 +209,32 @@
         <mxCell id="e_P_none_no" edge="1" parent="1" source="rh_P_none" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="enc_e_calc" value="Нет">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_ezero_outcipher" edge="1" parent="1" source="enc_e_zero" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="out_cipher">
+        <mxCell id="e_ezero_outcipher" edge="1" parent="1" source="enc_e_zero" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="out_cipher">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1460" y="1631" />
-              <mxPoint x="1460" y="1803" />
+              <mxPoint x="1440" y="1631" />
+              <mxPoint x="1440" y="1760" />
+              <mxPoint x="1710" y="1760" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="e_ecalc_outcipher" edge="1" parent="1" source="enc_e_calc" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="out_cipher">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_enc_no_to_dec" edge="1" parent="1" source="rh_enc" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="rh_dec" value="Нет">
+        <mxCell id="e_enc_no_to_dec" edge="1" parent="1" source="rh_enc" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="rh_dec" value="Нет">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1330" y="1288" />
-              <mxPoint x="1330" y="1908" />
+              <mxPoint x="1330" y="1850" />
+              <mxPoint x="1710" y="1850" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="e_dec_yes" edge="1" parent="1" source="rh_dec" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="dec_in_R_e" value="Да">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1910" y="1908" />
-              <mxPoint x="1910" y="1681" />
+              <mxPoint x="1870" y="1908" />
+              <mxPoint x="1870" y="1613" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -233,11 +253,12 @@
         <mxCell id="e_Q_none_no" edge="1" parent="1" source="rh_Q_none" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="dec_inv" value="Нет">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mzero_outm" edge="1" parent="1" source="dec_m_zero" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="out_m">
+        <mxCell id="e_mzero_outm" edge="1" parent="1" source="dec_m_zero" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="out_m">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="2370" y="1884" />
-              <mxPoint x="2370" y="2138" />
+              <mxPoint x="2320" y="1816" />
+              <mxPoint x="2320" y="2032" />
+              <mxPoint x="2060" y="2032" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -248,37 +269,44 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="fo_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;" value="Поиск порядка точки G" vertex="1">
-          <mxGeometry height="24" width="240" x="3130" y="-100" as="geometry" />
+          <mxGeometry height="24" width="240" x="2800" y="91" as="geometry" />
         </mxCell>
         <mxCell id="fo_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Начало" vertex="1">
-          <mxGeometry height="40" width="120" x="3190" y="-70" as="geometry" />
+          <mxGeometry height="40" width="120" x="2860" y="121" as="geometry" />
         </mxCell>
         <mxCell id="fo_init" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="текущая точка = G,&#xa;q = 1" vertex="1">
-          <mxGeometry height="46" width="200" x="3150" y="-10" as="geometry" />
+          <mxGeometry height="46" width="200" x="2820" y="181" as="geometry" />
         </mxCell>
         <mxCell id="fo_loop_s" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Цикл пока точка существует" vertex="1">
-          <mxGeometry height="46" width="220" x="3140" y="50" as="geometry" />
+          <mxGeometry height="46" width="220" x="2810" y="241" as="geometry" />
         </mxCell>
         <mxCell id="fo_add" parent="1" style="shape=process;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="точка = точка + G&#xa;(сложение точек)" vertex="1">
-          <mxGeometry height="50" width="200" x="3150" y="110" as="geometry" />
+          <mxGeometry height="50" width="200" x="2820" y="301" as="geometry" />
         </mxCell>
         <mxCell id="fo_inc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="q = q + 1" vertex="1">
-          <mxGeometry height="40" width="160" x="3170" y="174" as="geometry" />
+          <mxGeometry height="40" width="160" x="2840" y="365" as="geometry" />
         </mxCell>
         <mxCell id="fo_check" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="q &gt; 2p?" vertex="1">
-          <mxGeometry height="60" width="140" x="3180" y="228" as="geometry" />
+          <mxGeometry height="60" width="140" x="2850" y="419" as="geometry" />
+        </mxCell>
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-4" edge="1" parent="1" source="fo_none" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="fo_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2700" y="605" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="fo_none" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат: порядок не найден" vertex="1">
-          <mxGeometry height="40" width="200" x="2930" y="238" as="geometry" />
+          <mxGeometry height="40" width="200" x="2600" y="429" as="geometry" />
         </mxCell>
         <mxCell id="fo_loop_e" parent="1" style="shape=mxgraph.flowchart.loop_limit;flipV=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Конец цикла" vertex="1">
-          <mxGeometry height="40" width="220" x="3140" y="310" as="geometry" />
+          <mxGeometry height="40" width="220" x="2810" y="501" as="geometry" />
         </mxCell>
         <mxCell id="fo_ret" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат значения q" vertex="1">
-          <mxGeometry height="40" width="180" x="3160" y="364" as="geometry" />
+          <mxGeometry height="40" width="180" x="2830" y="555" as="geometry" />
         </mxCell>
         <mxCell id="fo_end" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="40" width="120" x="3190" y="414" as="geometry" />
+          <mxGeometry height="40" width="120" x="2860" y="624" as="geometry" />
         </mxCell>
         <mxCell id="e_fo1" edge="1" parent="1" source="fo_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="fo_init">
           <mxGeometry relative="1" as="geometry" />
@@ -308,37 +336,37 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="mp_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;" value="Умножение точки P на число k" vertex="1">
-          <mxGeometry height="24" width="260" x="3815" y="487" as="geometry" />
+          <mxGeometry height="24" width="260" x="3880" y="690" as="geometry" />
         </mxCell>
         <mxCell id="mp_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Начало" vertex="1">
-          <mxGeometry height="40" width="120" x="3885" y="517" as="geometry" />
+          <mxGeometry height="40" width="120" x="3950" y="720" as="geometry" />
         </mxCell>
         <mxCell id="mp_init" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="результат = бесконечно удалённая точка,&#xa;текущая = P" vertex="1">
-          <mxGeometry height="56" width="280" x="3805" y="577" as="geometry" />
+          <mxGeometry height="56" width="280" x="3870" y="780" as="geometry" />
         </mxCell>
         <mxCell id="mp_loop_s" parent="1" style="shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Цикл пока k &gt; 0" vertex="1">
-          <mxGeometry height="46" width="220" x="3835" y="647" as="geometry" />
+          <mxGeometry height="46" width="220" x="3900" y="850" as="geometry" />
         </mxCell>
         <mxCell id="mp_check_bit" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="k mod 2 = 1?" vertex="1">
-          <mxGeometry height="70" width="160" x="3865" y="707" as="geometry" />
+          <mxGeometry height="70" width="160" x="3930" y="910" as="geometry" />
         </mxCell>
         <mxCell id="mp_add" parent="1" style="shape=process;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="результат = результат + текущая&#xa;(сложение точек)" vertex="1">
-          <mxGeometry height="50" width="240" x="3575" y="717" as="geometry" />
+          <mxGeometry height="50" width="240" x="3640" y="920" as="geometry" />
         </mxCell>
         <mxCell id="mp_double" parent="1" style="shape=process;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="текущая = 2 · текущая&#xa;(удвоение точки)" vertex="1">
-          <mxGeometry height="50" width="240" x="3825" y="807" as="geometry" />
+          <mxGeometry height="50" width="240" x="3890" y="1010" as="geometry" />
         </mxCell>
         <mxCell id="mp_shift" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="k = k // 2" vertex="1">
-          <mxGeometry height="40" width="160" x="3865" y="877" as="geometry" />
+          <mxGeometry height="40" width="160" x="3930" y="1080" as="geometry" />
         </mxCell>
         <mxCell id="mp_loop_e" parent="1" style="shape=mxgraph.flowchart.loop_limit;flipV=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Конец цикла" vertex="1">
-          <mxGeometry height="40" width="220" x="3835" y="937" as="geometry" />
+          <mxGeometry height="40" width="220" x="3900" y="1140" as="geometry" />
         </mxCell>
         <mxCell id="mp_ret" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат результата" vertex="1">
-          <mxGeometry height="40" width="200" x="3845" y="991" as="geometry" />
+          <mxGeometry height="40" width="200" x="3910" y="1194" as="geometry" />
         </mxCell>
         <mxCell id="mp_end" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="40" width="120" x="3885" y="1041" as="geometry" />
+          <mxGeometry height="40" width="120" x="3950" y="1244" as="geometry" />
         </mxCell>
         <mxCell id="e_mp1" edge="1" parent="1" source="mp_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="mp_init">
           <mxGeometry relative="1" as="geometry" />
@@ -355,10 +383,11 @@
         <mxCell id="Jr0jRwDP9k7Mxb64boih-2" edge="1" parent="1" source="mp_check_bit" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="mp_double" value="Нет">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mp_add_double" edge="1" parent="1" source="mp_add" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="mp_double">
+        <mxCell id="e_mp_add_double" edge="1" parent="1" source="mp_add" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="mp_double">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="3695" y="832" />
+              <mxPoint x="3760" y="991" />
+              <mxPoint x="4010" y="991" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -375,49 +404,83 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="pa_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;" value="Сложение точек P и Q" vertex="1">
-          <mxGeometry height="24" width="260" x="3480" y="-117" as="geometry" />
+          <mxGeometry height="24" width="260" x="3150" y="74" as="geometry" />
         </mxCell>
         <mxCell id="pa_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Начало" vertex="1">
-          <mxGeometry height="40" width="120" x="3550" y="-87" as="geometry" />
+          <mxGeometry height="40" width="120" x="3220" y="104" as="geometry" />
         </mxCell>
         <mxCell id="pa_rh_pinf" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="P — бесконечно&#xa;удалённая точка?" vertex="1">
-          <mxGeometry height="70" width="200" x="3510" y="-27" as="geometry" />
+          <mxGeometry height="70" width="200" x="3180" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-11" edge="1" parent="1" source="pa_ret_Q" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="pa_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3710" y="199" />
+              <mxPoint x="3710" y="781" />
+              <mxPoint x="3300" y="781" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="pa_ret_Q" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат Q" vertex="1">
-          <mxGeometry height="40" width="140" x="3760" y="-12" as="geometry" />
+          <mxGeometry height="40" width="140" x="3550" y="179" as="geometry" />
         </mxCell>
         <mxCell id="pa_rh_qinf" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Q — бесконечно&#xa;удалённая точка?" vertex="1">
-          <mxGeometry height="70" width="200" x="3510" y="73" as="geometry" />
+          <mxGeometry height="70" width="200" x="3180" y="264" as="geometry" />
+        </mxCell>
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-10" edge="1" parent="1" source="pa_ret_P" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="pa_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3670" y="297" />
+              <mxPoint x="3670" y="781" />
+              <mxPoint x="3300" y="781" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="pa_ret_P" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат P" vertex="1">
-          <mxGeometry height="40" width="140" x="3760" y="88" as="geometry" />
+          <mxGeometry height="40" width="140" x="3490" y="277" as="geometry" />
         </mxCell>
         <mxCell id="pa_rh_opp" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="x1 = x2 и&#xa;(y1 + y2) mod p = 0?" vertex="1">
-          <mxGeometry height="70" width="220" x="3500" y="173" as="geometry" />
+          <mxGeometry height="70" width="220" x="3170" y="364" as="geometry" />
+        </mxCell>
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-8" edge="1" parent="1" source="pa_ret_inf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="pa_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3650" y="399" />
+              <mxPoint x="3650" y="781" />
+              <mxPoint x="3300" y="781" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="pa_ret_inf" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат бесконечно&#xa;удалённой точки" vertex="1">
-          <mxGeometry height="50" width="200" x="3760" y="183" as="geometry" />
+          <mxGeometry height="50" width="200" x="3430" y="374" as="geometry" />
         </mxCell>
         <mxCell id="pa_rh_eq" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="P = Q?" vertex="1">
-          <mxGeometry height="70" width="160" x="3530" y="273" as="geometry" />
+          <mxGeometry height="70" width="160" x="3200" y="464" as="geometry" />
+        </mxCell>
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-7" edge="1" parent="1" source="pa_call_dbl" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="pa_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3510" y="784" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="pa_call_dbl" parent="1" style="shape=process;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Удвоение точки P&#xa;и возврат результата" vertex="1">
-          <mxGeometry height="50" width="220" x="3750" y="283" as="geometry" />
+          <mxGeometry height="50" width="220" x="3420" y="474" as="geometry" />
         </mxCell>
         <mxCell id="pa_lambda" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="λ = (y2 − y1) · (x2 − x1)⁻¹ mod p" vertex="1">
-          <mxGeometry height="46" width="280" x="3490" y="373" as="geometry" />
+          <mxGeometry height="46" width="280" x="3160" y="564" as="geometry" />
         </mxCell>
         <mxCell id="pa_x3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="x3 = (λ² − x1 − x2) mod p" vertex="1">
-          <mxGeometry height="40" width="240" x="3510" y="433" as="geometry" />
+          <mxGeometry height="40" width="240" x="3180" y="624" as="geometry" />
         </mxCell>
         <mxCell id="pa_y3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="y3 = (λ · (x1 − x3) − y1) mod p" vertex="1">
-          <mxGeometry height="40" width="260" x="3500" y="487" as="geometry" />
+          <mxGeometry height="40" width="260" x="3170" y="678" as="geometry" />
         </mxCell>
         <mxCell id="pa_ret" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат точки (x3, y3)" vertex="1">
-          <mxGeometry height="40" width="220" x="3520" y="541" as="geometry" />
+          <mxGeometry height="40" width="220" x="3190" y="732" as="geometry" />
         </mxCell>
         <mxCell id="pa_end" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="40" width="120" x="3570" y="593" as="geometry" />
+          <mxGeometry height="40" width="120" x="3240" y="809" as="geometry" />
         </mxCell>
         <mxCell id="e_pa1" edge="1" parent="1" source="pa_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="pa_rh_pinf">
           <mxGeometry relative="1" as="geometry" />
@@ -459,37 +522,52 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="pd_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;" value="Удвоение точки P" vertex="1">
-          <mxGeometry height="24" width="220" x="4050" y="-70" as="geometry" />
+          <mxGeometry height="24" width="220" x="3900" y="30" as="geometry" />
         </mxCell>
         <mxCell id="pd_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Начало" vertex="1">
-          <mxGeometry height="40" width="120" x="4100" y="-40" as="geometry" />
+          <mxGeometry height="40" width="120" x="3950" y="60" as="geometry" />
         </mxCell>
         <mxCell id="pd_rh_inf" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="P — бесконечно&#xa;удалённая точка?" vertex="1">
-          <mxGeometry height="70" width="200" x="4060" y="20" as="geometry" />
+          <mxGeometry height="70" width="200" x="3910" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-6" edge="1" parent="1" source="pd_ret_inf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="pd_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4380" y="155" />
+              <mxPoint x="4380" y="559" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="pd_ret_inf" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат бесконечно&#xa;удалённой точки" vertex="1">
-          <mxGeometry height="50" width="200" x="4310" y="30" as="geometry" />
+          <mxGeometry height="50" width="200" x="4160" y="130" as="geometry" />
         </mxCell>
         <mxCell id="pd_rh_y0" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="y = 0?" vertex="1">
-          <mxGeometry height="60" width="140" x="4090" y="120" as="geometry" />
+          <mxGeometry height="60" width="140" x="3940" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="k_CTPVG2_r5Uj6bwxKzA-5" edge="1" parent="1" source="pd_ret_inf2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="pd_end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4250" y="559" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="pd_ret_inf2" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат бесконечно&#xa;удалённой точки" vertex="1">
-          <mxGeometry height="50" width="200" x="4310" y="125" as="geometry" />
+          <mxGeometry height="50" width="200" x="4160" y="225" as="geometry" />
         </mxCell>
         <mxCell id="pd_lambda" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="λ = (3x² + a) · (2y)⁻¹ mod p" vertex="1">
-          <mxGeometry height="46" width="280" x="4040" y="210" as="geometry" />
+          <mxGeometry height="46" width="280" x="3890" y="310" as="geometry" />
         </mxCell>
         <mxCell id="pd_x3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="x3 = (λ² − 2x) mod p" vertex="1">
-          <mxGeometry height="40" width="240" x="4060" y="270" as="geometry" />
+          <mxGeometry height="40" width="240" x="3910" y="370" as="geometry" />
         </mxCell>
         <mxCell id="pd_y3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="y3 = (λ · (x − x3) − y) mod p" vertex="1">
-          <mxGeometry height="40" width="260" x="4050" y="324" as="geometry" />
+          <mxGeometry height="40" width="260" x="3900" y="424" as="geometry" />
         </mxCell>
         <mxCell id="pd_ret" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат точки (x3, y3)" vertex="1">
-          <mxGeometry height="40" width="220" x="4070" y="378" as="geometry" />
+          <mxGeometry height="40" width="220" x="3920" y="478" as="geometry" />
         </mxCell>
         <mxCell id="pd_end" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="40" width="120" x="4120" y="430" as="geometry" />
+          <mxGeometry height="40" width="120" x="3970" y="570" as="geometry" />
         </mxCell>
         <mxCell id="e_pd1" edge="1" parent="1" source="pd_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="pd_rh_inf">
           <mxGeometry relative="1" as="geometry" />
@@ -519,19 +597,19 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="mi_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=12;" value="Обратный элемент по модулю p" vertex="1">
-          <mxGeometry height="24" width="280" x="3120" y="520" as="geometry" />
+          <mxGeometry height="24" width="280" x="2790" y="711" as="geometry" />
         </mxCell>
         <mxCell id="mi_start" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Начало" vertex="1">
-          <mxGeometry height="40" width="120" x="3200" y="550" as="geometry" />
+          <mxGeometry height="40" width="120" x="2870" y="741" as="geometry" />
         </mxCell>
         <mxCell id="mi_calc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Вычисление по малой теореме Ферма:&#xa;результат = n^(p − 2) mod p" vertex="1">
-          <mxGeometry height="56" width="320" x="3100" y="610" as="geometry" />
+          <mxGeometry height="56" width="320" x="2770" y="801" as="geometry" />
         </mxCell>
         <mxCell id="mi_ret" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=15;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Возврат результата" vertex="1">
-          <mxGeometry height="40" width="220" x="3150" y="680" as="geometry" />
+          <mxGeometry height="40" width="220" x="2820" y="871" as="geometry" />
         </mxCell>
         <mxCell id="mi_end" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="40" width="120" x="3200" y="730" as="geometry" />
+          <mxGeometry height="40" width="120" x="2870" y="921" as="geometry" />
         </mxCell>
         <mxCell id="e_mi1" edge="1" parent="1" source="mi_start" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="mi_calc">
           <mxGeometry relative="1" as="geometry" />
@@ -541,12 +619,6 @@
         </mxCell>
         <mxCell id="e_mi3" edge="1" parent="1" source="mi_ret" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="mi_end">
           <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="WZcql3p2c3XSBmHeB4WP-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="46" width="160" x="2040" y="658" as="geometry" />
-        </mxCell>
-        <mxCell id="WZcql3p2c3XSBmHeB4WP-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
-          <mxGeometry height="46" width="160" x="2040" y="898" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

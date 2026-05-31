@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Магма (ГОСТ 28147-89)" id="magma_main_v2">
-    <mxGraphModel dx="3869" dy="1780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2800" math="0" shadow="0">
+    <mxGraphModel dx="2897" dy="1238" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2800" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -41,13 +41,13 @@
           <mxGeometry height="80" width="200" x="1480" y="1030" as="geometry" />
         </mxCell>
         <mxCell id="to_hex" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Перевод результата в hex,&#xa;дополнение нулями слева до 16 символов&#xa;Добавление к результату" vertex="1">
-          <mxGeometry height="64" width="320" x="1430" y="1590" as="geometry" />
+          <mxGeometry height="64" width="320" x="1430" y="1620" as="geometry" />
         </mxCell>
         <mxCell id="loop_e" parent="1" style="shape=mxgraph.flowchart.loop_limit;flipV=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Конец цикла по блокам" vertex="1">
-          <mxGeometry height="50" width="320" x="1430" y="1680" as="geometry" />
+          <mxGeometry height="50" width="320" x="1430" y="1700" as="geometry" />
         </mxCell>
         <mxCell id="out_res" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1;" value="Вывод полученного результата (hex)" vertex="1">
-          <mxGeometry height="50" width="340" x="1420" y="1760" as="geometry" />
+          <mxGeometry height="50" width="340" x="1420" y="1770" as="geometry" />
         </mxCell>
         <mxCell id="fin" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=13;fontStyle=1;verticalAlign=middle;" value="Конец" vertex="1">
           <mxGeometry height="46" width="160" x="1510" y="1840" as="geometry" />
@@ -61,11 +61,12 @@
         <mxCell id="e3" edge="1" parent="1" source="inp_mode" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="chk_mode">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_mode_no" edge="1" parent="1" source="chk_mode" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="inp_mode" value="Нет">
+        <mxCell id="e_mode_no" edge="1" parent="1" source="chk_mode" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="inp_mode" value="Нет">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1820" y="340" />
-              <mxPoint x="1820" y="238" />
+              <mxPoint x="1820" y="190" />
+              <mxPoint x="1580" y="190" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -75,11 +76,12 @@
         <mxCell id="e4" edge="1" parent="1" source="inp_key" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="chk_key_len">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_key_no" edge="1" parent="1" source="chk_key_len" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="inp_key" value="Нет">
+        <mxCell id="e_key_no" edge="1" parent="1" source="chk_key_len" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="inp_key" value="Нет">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1830" y="530" />
-              <mxPoint x="1830" y="435" />
+              <mxPoint x="1830" y="390" />
+              <mxPoint x="1580" y="390" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -89,11 +91,12 @@
         <mxCell id="e5" edge="1" parent="1" source="inp_text" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="chk_text_len">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_text_no" edge="1" parent="1" source="chk_text_len" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="inp_text" value="Нет">
+        <mxCell id="e_text_no" edge="1" parent="1" source="chk_text_len" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="inp_text" value="Нет">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1830" y="720" />
-              <mxPoint x="1830" y="628" />
+              <mxPoint x="1830" y="580" />
+              <mxPoint x="1580" y="580" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -146,11 +149,11 @@
         <mxCell id="me_final" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Финальный раунд (без перестановки):&#xa;результат = (левая XOR g(правая, подключ[31])) ‖ правая" vertex="1">
           <mxGeometry height="56" width="320" x="1140" y="1390" as="geometry" />
         </mxCell>
-        <mxCell id="0GTCNmF5ibP0226c-8Du-1" edge="1" parent="1" source="me_ret" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;curved=0;" target="to_hex">
+        <mxCell id="0GTCNmF5ibP0226c-8Du-1" edge="1" parent="1" source="me_ret" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=0;" target="to_hex">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1310" y="1620" />
-              <mxPoint x="1430" y="1620" />
+              <mxPoint x="1310" y="1590" />
+              <mxPoint x="1590" y="1590" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -176,7 +179,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="md_keys" parent="1" style="shape=process;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Расписание подключей (keys)&#xa;из 256-битного ключа" vertex="1">
-          <mxGeometry height="50" width="280" x="1730" y="1040" as="geometry" />
+          <mxGeometry height="50" width="280" x="1740" y="1045" as="geometry" />
         </mxCell>
         <mxCell id="md_rev" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=1;" value="Переворот списка подключей" vertex="1">
           <mxGeometry height="46" width="280" x="1730" y="1110" as="geometry" />
@@ -220,7 +223,7 @@
         <mxCell id="md_e8" edge="1" parent="1" source="md_final" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="md_ret">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="md_e9" edge="1" parent="1" source="md_ret" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="to_hex">
+        <mxCell id="md_e9" edge="1" parent="1" source="md_ret" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="to_hex">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="2080" y="1576" as="targetPoint" />
           </mxGeometry>
