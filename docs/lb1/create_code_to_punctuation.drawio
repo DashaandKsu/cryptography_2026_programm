@@ -1,0 +1,55 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="-QdE5HLqYuPHiBG5wiqp" name="Page-1">
+    <mxGraphModel dx="2011" dy="958" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="ellipse;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Начало" vertex="1">
+          <mxGeometry height="60" width="200" x="325" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="rounded=0;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Создание пустого словаря&#xa;«обратные коды»" vertex="1">
+          <mxGeometry height="70" width="300" x="275" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="shape=mxgraph.flowchart.loop_limit;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Цикл перебора знаков препинания&#xa;из словаря «знак → код»" vertex="1">
+          <mxGeometry height="70" width="340" x="255" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=0;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Получение кода для&#xa;текущего знака препинания" vertex="1">
+          <mxGeometry height="70" width="300" x="275" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="rounded=0;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Запись пары «код → знак»&#xa;в обратный словарь" vertex="1">
+          <mxGeometry height="70" width="300" x="275" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="shape=mxgraph.flowchart.loop_limit;flipV=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Цикл перебора знаков препинания" vertex="1">
+          <mxGeometry height="70" width="340" x="255" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;fixedSize=1;size=20;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Возврат обратного словаря «код → знак»" vertex="1">
+          <mxGeometry height="70" width="340" x="255" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="ellipse;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=13;" value="Конец" vertex="1">
+          <mxGeometry height="60" width="200" x="325" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="10" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="11" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="12" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="14" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="15" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="16" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
